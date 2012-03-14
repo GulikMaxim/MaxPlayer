@@ -4,13 +4,15 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui\
+            phonon
 
 TARGET = MaxPlayerProject
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        widget.cpp
+SOURCES += main.cpp \
+    mainwindow.cpp
 
-HEADERS  += widget.h
+HEADERS  += \
+    mainwindow.h
