@@ -12,7 +12,21 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    playlistwidget.cpp \
+    audioplayerwidget.cpp \
+    trackbutton.cpp \
+    window.cpp \
+    explorerwidget.cpp \
+    settingwidget.cpp \
+    librarywidget.cpp
 
 HEADERS  += \
-    mainwindow.h
+    mainwindow.h \
+    playlistwidget.h \
+    audioplayerwidget.h \
+    trackbutton.h \
+    window.h \
+    explorerwidget.h \
+    settingwidget.h \
+    librarywidget.h

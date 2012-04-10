@@ -3,31 +3,49 @@
 
 #include <QtGui>
 #include <phonon>
+#include <window.h>
+#include <audioplayerwidget.h>
+#include <playlistwidget.h>
+#include <explorerwidget.h>
+#include <settingwidget.h>
+#include <librarywidget.h>
 
-class MainWindow : public QWidget
+class MainWindow : public Window
 {
     Q_OBJECT
 
-    Phonon::MediaObject *p_AudioObject;
-    Phonon::AudioOutput *p_AudioOutput;
-    Phonon::SeekSlider *p_SeekSlider;
-    Phonon::VolumeSlider *p_VolumeSlider;
-    QGridLayout playerLayout;
+    QStackedWidget *p_ShiftingFieldWidgets; /*stack of widgets that shows at shifting field*/
 
-    QPushButton *p_PlayPauseButton;
+    /*widgets that user can select when clicked on the one
+    of buttons on the left side of player main window*/
+    PlaylistWidget *p_PlaylistWidget;
+    ExplorerWidget *p_ExplorerWidget;
+    SettingWidget *p_SettingWidget;
+    LibraryWidget *p_LibraryWidget;
+
+    //player widget
+    AudioPlayerWidget *p_AudioPlayerWidget;
+
+    //palette of program
+    QPalette *p_MainPalette;
+
+    //left side control buttom
+    QPushButton *p_PlaylistButton;
+    QPushButton *p_LibraryButton;
+    QPushButton *p_ExplorerButton;
+    QPushButton *p_SettingButton;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-
-
-private:
-    void ControlElementsSetup();     //setup of buttons for playing, pause and stope music
-    void AudioSetup();
+    void SetButtonTextColor(QPushButton* p_Button, const QColor & color);
     
 signals:
     
 public slots:
-    void PlayPauseSlot();
+    void PlaylistButtonClickedSlot();
+    void LibraryButtonClickedSlot();
+    void ExplorerButtonClickedSlot();
+    void SettingButtonClickedSlot();
 };
 
 #endif // MAINWINDOW_H
