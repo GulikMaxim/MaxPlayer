@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'audioplayerwidget.h'
 **
-** Created: Sun 8. Apr 14:47:13 2012
+** Created: Tue 17. Apr 11:53:31 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_AudioPlayerWidget[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -32,12 +32,22 @@ static const uint qt_meta_data_AudioPlayerWidget[] = {
 
  // slots: signature, parameters, type, tag, flags
       19,   18,   18,   18, 0x0a,
+      46,   18,   18,   18, 0x0a,
+      63,   18,   18,   18, 0x0a,
+      88,   18,   18,   18, 0x0a,
+     108,   18,   18,   18, 0x0a,
+     135,   18,   18,   18, 0x0a,
+     161,   18,   18,   18, 0x0a,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_AudioPlayerWidget[] = {
     "AudioPlayerWidget\0\0PlayPauseButtonClickSlot()\0"
+    "StopButtonSlot()\0PlaylistTrackClickSlot()\0"
+    "TrackFinishedSlot()\0NextTrackButtonClickSlot()\0"
+    "PrevTracButtonClickSlot()\0"
+    "VolumButtonClickSlot()\0"
 };
 
 const QMetaObject AudioPlayerWidget::staticMetaObject = {
@@ -70,9 +80,15 @@ int AudioPlayerWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: PlayPauseButtonClickSlot(); break;
+        case 1: StopButtonSlot(); break;
+        case 2: PlaylistTrackClickSlot(); break;
+        case 3: TrackFinishedSlot(); break;
+        case 4: NextTrackButtonClickSlot(); break;
+        case 5: PrevTracButtonClickSlot(); break;
+        case 6: VolumButtonClickSlot(); break;
         default: ;
         }
-        _id -= 1;
+        _id -= 7;
     }
     return _id;
 }

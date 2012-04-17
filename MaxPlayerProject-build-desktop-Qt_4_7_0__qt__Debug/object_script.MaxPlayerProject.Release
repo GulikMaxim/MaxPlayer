@@ -8,6 +8,7 @@ INPUT(
 ./release\explorerwidget.o
 ./release\settingwidget.o
 ./release\librarywidget.o
+./release\mycheckablebutton.o
 ./release\moc_mainwindow.o
 ./release\moc_playlistwidget.o
 ./release\moc_audioplayerwidget.o
@@ -16,4 +17,5 @@ INPUT(
 ./release\moc_explorerwidget.o
 ./release\moc_settingwidget.o
 ./release\moc_librarywidget.o
+./release\moc_mycheckablebutton.o
 );

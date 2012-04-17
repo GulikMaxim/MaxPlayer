@@ -4,9 +4,11 @@ MainWindow::MainWindow(QWidget *parent) : Window(parent)
 {
     //main window setup
     p_MainPalette = new QPalette(Qt::cyan,Qt::black);               // set font's and backgrod colors
+    p_MainPalette->setBrush(this->backgroundRole(),QBrush(QPixmap("MainWindowBackground.jpg")));
+    this->setAutoFillBackground(true);
     this->setPalette(*p_MainPalette);
     this->setFont(QFont("Bauhaus 93",10,QFont::Normal));
-    this->setFixedSize(526,480);
+    this->setFixedSize(526,630);
     this->setStyle(new QPlastiqueStyle());
 
     //control buttons setup
@@ -45,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) : Window(parent)
     //Player widget setup
     p_AudioPlayerWidget = new AudioPlayerWidget();
     p_AudioPlayerWidget->setParent(this);
-    p_AudioPlayerWidget->move(83,380);
+    p_AudioPlayerWidget->move(83,530);
 
     //Shifting widgets setup
     QQueue<QUrl> songs;
@@ -66,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent) : Window(parent)
 
     //Shifting widgets stack setup
     p_ShiftingFieldWidgets = new QStackedWidget(this);
-    p_ShiftingFieldWidgets->setFixedSize(437,352);
+    p_ShiftingFieldWidgets->setFixedSize(432,522);
     p_ShiftingFieldWidgets->setFrameStyle(QFrame::Box | QFrame::Sunken);
     p_ShiftingFieldWidgets->move(83,30);
     p_ShiftingFieldWidgets->addWidget(p_PlaylistWidget);

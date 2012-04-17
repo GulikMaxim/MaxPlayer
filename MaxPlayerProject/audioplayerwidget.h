@@ -4,6 +4,7 @@
 #include <QtGui>
 #include <phonon>
 #include <playlistwidget.h>
+#include <mycheckablebutton.h>
 
 class AudioPlayerWidget : public QWidget
 {
@@ -15,24 +16,38 @@ class AudioPlayerWidget : public QWidget
 
     Phonon::SeekSlider *p_SeekSlider;
     Phonon::VolumeSlider *p_VolumeSlider;
+
     QPushButton *p_PlayPauseButton;
+    QPushButton *p_StopButton;
+    QPushButton *p_NextTrackButton;
+    QPushButton *p_PrevTrackButton;    
+    MyCheckableButton *p_ReplayTrackButton;
+    MyCheckableButton *p_RandomPlayButton;
+    MyCheckableButton *p_VolumeButton;
 
     QGridLayout *p_playerLayout;
 
 public:
     AudioPlayerWidget(QWidget *parent = 0);
     AudioPlayerWidget(QList<QUrl> songList, QWidget *parent = 0);
+
     void SetMediaObject(Phonon::MediaObject *p_CurrentMediaObject);
-    void ConnectPlaylist(PlaylistWidget *p_Playlist);
+    void ConnectPlaylist(PlaylistWidget *p_Playlist);    //connect with playlistwidget object
 
 private:
-    void ControlElementsSetup();     //setup of buttons for playing, pause and stope music
-    void AudioSetup();
+    void SeekSliderMediaObjectSet();   //connect seekslider object with audio object
+    //void SetCurrentActivePlaylistTrack();   //get selected object from playlist
 
 signals:
 
 public slots:
     void PlayPauseButtonClickSlot();
+    void StopButtonSlot();
+    void PlaylistTrackClickSlot();
+    void TrackFinishedSlot();
+    void NextTrackButtonClickSlot();
+    void PrevTracButtonClickSlot();
+    void VolumButtonClickSlot();
     
 };
 

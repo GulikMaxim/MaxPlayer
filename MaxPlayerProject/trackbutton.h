@@ -15,7 +15,7 @@ class TrackButton : public QPushButton
 
     QLabel *p_ArtistNameLabel;
     QLabel *p_TrackNameLabel;
-    QLabel *p_PlayStatusLineLabel;
+    QLabel *p_ActiveStatusLineLabel;
     QLabel *p_PlayStatusTriangleLabel;
 
 public:
@@ -26,6 +26,8 @@ public:
     void SetPlayStatus(bool isPlay);
     void OpenTrack(QUrl trackUrl);
     Phonon::MediaObject* GetTrackObject();
+    bool IsActive();
+    bool IsPlay();
 
 private:
 

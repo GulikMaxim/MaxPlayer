@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     window.cpp \
     explorerwidget.cpp \
     settingwidget.cpp \
-    librarywidget.cpp
+    librarywidget.cpp \
+    mycheckablebutton.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -29,4 +30,5 @@ HEADERS  += \
     window.h \
     explorerwidget.h \
     settingwidget.h \
-    librarywidget.h
+    librarywidget.h \
+    mycheckablebutton.h

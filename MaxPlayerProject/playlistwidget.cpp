@@ -3,24 +3,22 @@
 PlaylistWidget::PlaylistWidget(QQueue<QUrl> songListUrls,QWidget *parent) : QScrollArea(parent)
 {
     //widget setup
-    this->setFixedSize(435,350);
+    this->setFixedSize(430,520);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
-
-    //song list widget setup
-    p_TrackListWidget = new QWidget();
-    p_TrackListWidget->setWindowFlags(Qt::FramelessWindowHint);
+    QPalette *p_PlaylistPalette = new QPalette(Qt::cyan,Qt::black);               // set font's and backgrod colors
+    p_PlaylistPalette->setBrush(this->backgroundRole(),QBrush(QPixmap("shifftingWidgetBackgraund.jpg")));
+    this->setAutoFillBackground(true);
+    this->setPalette(*p_PlaylistPalette);
 
     OpenTracks(songListUrls);
     FillInTracksListWidget();
-
-    this->setWidget(p_TrackListWidget);
+    playTrackIndex = -1;     // no one track didnt play
 }
-
 //methods
 void PlaylistWidget::FillInTracksListWidget()
 {
-    QPoint trackPosition(3,1);
+   QPoint trackPosition(3,1);
    foreach(TrackButton* p_TrackButton, tracksList)
    {
        p_TrackButton->setParent(this);
@@ -35,20 +33,81 @@ void PlaylistWidget::OpenTracks(QQueue<QUrl> songsUrls)
         TrackButton *p_TrackButton = new TrackButton();
         p_TrackButton->OpenTrack(songUrl);
         tracksList<<p_TrackButton;
+        connect(p_TrackButton->GetTrackObject(),SIGNAL(finished()),SIGNAL(trackFinishedSignal));
         connect(p_TrackButton,SIGNAL(clicked()),SLOT(TrackButtonClickSlot()));
     }
 
-    p_CurrentActiveTrack = tracksList[0];  // set first track current
-    p_CurrentActiveTrack->SetActiveStatus(true);
+    activTrackIndex = 0; // set first track in list current
+    tracksList[0]->SetActiveStatus(true);
 }
-Phonon::MediaObject* PlaylistWidget::GetCurrentActiveTrackMediaObject()
+TrackButton* PlaylistWidget::GetActiveTrack()
 {
-    return p_CurrentActiveTrack->GetTrackObject();
+    return tracksList[activTrackIndex];
+}
+TrackButton* PlaylistWidget::GetNextPlayTrack(bool randomGanneration)
+{
+    TrackButton* p_NextTrack;
+    int lastIndex = tracksList.size()-1 ;
+    if(!randomGanneration)
+    {
+        if(playTrackIndex!=lastIndex)
+        {
+            playTrackIndex++;
+        }
+        else
+        {
+            playTrackIndex=0;
+        }
+    }
+    else
+    {
+        //random generation
+    }
+    p_NextTrack = tracksList[playTrackIndex];
+    return p_NextTrack;
+}
+int PlaylistWidget::GetTracksQuantity()
+{
+    return tracksList.size()-1;
+}
+TrackButton* PlaylistWidget::GetPlayTrack()
+{
+    if(playTrackIndex != -1)    //  if player play not first track
+    {
+        return tracksList[playTrackIndex];
+    }
+    else
+    {
+        return NULL;
+    }
+}
+int PlaylistWidget::GetTrackIndex(Phonon::MediaObject* p_PlayTrackObject)
+{
+    int currentPlayTrackIndex=0;
+    foreach(TrackButton* p_Track,tracksList)
+    {
+        if(p_Track->GetTrackObject() == p_PlayTrackObject)
+            break;
+        currentPlayTrackIndex++;
+    }
+    return currentPlayTrackIndex;
+}
+int PlaylistWidget::GetPlayTrackIndex()
+{
+    return playTrackIndex;
+}
+void PlaylistWidget::SetPlayTrackIndex(int trackIndex)
+{
+    playTrackIndex = trackIndex;
 }
 //slots
 void PlaylistWidget::TrackButtonClickSlot()
 {
-    p_CurrentActiveTrack->SetActiveStatus(false);
-    p_CurrentActiveTrack = (TrackButton*)sender();
-    p_CurrentActiveTrack->SetActiveStatus(true);
+    TrackButton* p_PreviousActiveTrack = this->GetActiveTrack();    
+    TrackButton* p_ClickedTrackButton = (TrackButton*)sender();
+    p_PreviousActiveTrack->SetActiveStatus(false);
+    p_ClickedTrackButton->SetActiveStatus(true);
+    activTrackIndex = this->GetTrackIndex(p_ClickedTrackButton->GetTrackObject());
+
+    emit TrackButtonClickSignal();
 }

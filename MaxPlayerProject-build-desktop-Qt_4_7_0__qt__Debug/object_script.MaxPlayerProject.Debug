@@ -8,6 +8,7 @@ INPUT(
 ./debug\explorerwidget.o
 ./debug\settingwidget.o
 ./debug\librarywidget.o
+./debug\mycheckablebutton.o
 ./debug\moc_mainwindow.o
 ./debug\moc_playlistwidget.o
 ./debug\moc_audioplayerwidget.o
@@ -16,4 +17,5 @@ INPUT(
 ./debug\moc_explorerwidget.o
 ./debug\moc_settingwidget.o
 ./debug\moc_librarywidget.o
+./debug\moc_mycheckablebutton.o
 );

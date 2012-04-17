@@ -5,7 +5,7 @@ Window::Window(QWidget *parent) :
 {
     //window setup
     this->setWindowFlags(Qt::FramelessWindowHint);
-    //this->setFrameStyle(QFrame::Plain | QFrame::Box);
+    this->setFrameStyle(QFrame::Plain | QFrame::Box);
 
     //Logo setup
     QLabel *p_LogoLabel = new QLabel(this);
