@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'playlistwidget.h'
 **
-** Created: Mon 16. Apr 13:04:33 2012
+** Created: Tue 1. May 16:02:51 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,30 +23,30 @@ static const uint qt_meta_data_PlaylistWidget[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       4,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       2,       // signalCount
-
- // signals: signature, parameters, type, tag, flags
-      16,   15,   15,   15, 0x05,
-      41,   15,   15,   15, 0x05,
+       0,       // signalCount
 
  // slots: signature, parameters, type, tag, flags
-      63,   15,   15,   15, 0x0a,
+      16,   15,   15,   15, 0x0a,
+      46,   15,   15,   15, 0x0a,
+      82,   15,   15,   15, 0x0a,
+      90,   15,   15,   15, 0x08,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_PlaylistWidget[] = {
-    "PlaylistWidget\0\0TrackButtonClickSignal()\0"
-    "trackFinishedSignal()\0TrackButtonClickSlot()\0"
+    "PlaylistWidget\0\0PlaylistMenuButtonClickSlot()\0"
+    "MultiSellectionCheckBoxChangeSlot()\0"
+    "Clear()\0SongListChangedSlot()\0"
 };
 
 const QMetaObject PlaylistWidget::staticMetaObject = {
-    { &QScrollArea::staticMetaObject, qt_meta_stringdata_PlaylistWidget,
+    { &TitleWidget::staticMetaObject, qt_meta_stringdata_PlaylistWidget,
       qt_meta_data_PlaylistWidget, 0 }
 };
 
@@ -64,35 +64,24 @@ void *PlaylistWidget::qt_metacast(const char *_clname)
     if (!_clname) return 0;
     if (!strcmp(_clname, qt_meta_stringdata_PlaylistWidget))
         return static_cast<void*>(const_cast< PlaylistWidget*>(this));
-    return QScrollArea::qt_metacast(_clname);
+    return TitleWidget::qt_metacast(_clname);
 }
 
 int PlaylistWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QScrollArea::qt_metacall(_c, _id, _a);
+    _id = TitleWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
-        case 0: TrackButtonClickSignal(); break;
-        case 1: trackFinishedSignal(); break;
-        case 2: TrackButtonClickSlot(); break;
+        case 0: PlaylistMenuButtonClickSlot(); break;
+        case 1: MultiSellectionCheckBoxChangeSlot(); break;
+        case 2: Clear(); break;
+        case 3: SongListChangedSlot(); break;
         default: ;
         }
-        _id -= 3;
+        _id -= 4;
     }
     return _id;
-}
-
-// SIGNAL 0
-void PlaylistWidget::TrackButtonClickSignal()
-{
-    QMetaObject::activate(this, &staticMetaObject, 0, 0);
-}
-
-// SIGNAL 1
-void PlaylistWidget::trackFinishedSignal()
-{
-    QMetaObject::activate(this, &staticMetaObject, 1, 0);
 }
 QT_END_MOC_NAMESPACE

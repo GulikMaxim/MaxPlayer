@@ -3,133 +3,142 @@
 AudioPlayerWidget::AudioPlayerWidget(QWidget *parent) : QWidget(parent)
 {
     //widget setap
-    this->setFixedSize(435,100);
-
+    this->setFixedSize(430,100);
 
     // audio setup
     p_AudioOutput = new Phonon::AudioOutput(Phonon::MusicCategory);
     p_AudioObject = new Phonon::MediaObject();
 
     //control element setup  (setup of buttons for playing, pause, stope music and other)
-    p_ReplayTrackButton = new MyCheckableButton(QPixmap(".\\replayTurnOn.png"), QPixmap(".\\replay.png"));
-    p_ReplayTrackButton->SetSize(QSize(25,25));
+    p_SeekSliderButton = new MyCheckableButton(QPixmap(".\\SeekSliderTurnOn.png"),QPixmap(".\\SeekSlider.png"),this);
+    p_SeekSliderButton->SetSize(QSize(25,25));
+    p_SeekSliderButton->move(25,23);
 
-    p_RandomPlayButton = new MyCheckableButton(QPixmap(".\\randomTurnOn.png"),QPixmap(".\\random.png"));
-    p_RandomPlayButton->SetSize(QSize(25,25));
-
-    p_VolumeButton = new MyCheckableButton();
+    p_VolumeButton = new MyCheckableButton(QPixmap(".\\volumeTurnOn.png"),QPixmap(".\\volume.png"),this);
     p_VolumeButton->SetSize(QSize(25,25));
+    p_VolumeButton->move(290,23);
+    connect(p_VolumeButton,SIGNAL(clicked()),SLOT(VolumButtonClickSlot()));
 
-    p_NextTrackButton = new QPushButton();
-    p_NextTrackButton->setFlat(true);
-    p_NextTrackButton->setFixedSize(30,30);
-    p_NextTrackButton->setIconSize(QSize(26,26));
-    p_NextTrackButton->setIcon(QIcon(QPixmap(".\\right.png")));
-    connect(p_NextTrackButton,SIGNAL(clicked()),SLOT(NextTrackButtonClickSlot()));
+    p_NextTrackButton = new PixmapButton(QPixmap(".\\right.png"),QSize(30,30),this);
+    p_NextTrackButton->move(240,20);
+    connect(p_NextTrackButton,SIGNAL(clicked()),SLOT(PlayNextTrackSlot()));
 
-    p_PrevTrackButton = new QPushButton();
-    p_PrevTrackButton->setFlat(true);
-    p_PrevTrackButton->setFixedSize(30,30);
-    p_PrevTrackButton->setIconSize(QSize(26,26));
-    p_PrevTrackButton->setIcon(QIcon(QPixmap(".\\left.png")));
+    p_PrevTrackButton = new PixmapButton(QPixmap(".\\left.png"),QSize(30,30),this);
+    p_PrevTrackButton->move(70,20);   //115,20
     connect(p_PrevTrackButton,SIGNAL(clicked()),SLOT(PrevTracButtonClickSlot()));
 
-    p_PlayPauseButton = new QPushButton();
-    p_PlayPauseButton->setFlat(true);
-    p_PlayPauseButton->setFixedSize(40,40);
-    p_PlayPauseButton->setIconSize(QSize(36,36));
-    p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\play.png")));
+    p_PlayPauseButton = new PixmapButton(QPixmap(".\\play.png"),QSize(40,40),this);
+    p_PlayPauseButton->move(120,15);
     connect(p_PlayPauseButton ,SIGNAL(clicked()), SLOT(PlayPauseButtonClickSlot()));
 
-    p_StopButton = new QPushButton();
-    p_StopButton->setFlat(true);
-    p_StopButton->setFixedSize(40,40);
-    p_StopButton->setIconSize(QSize(36,36));
-    p_StopButton->setIcon(QIcon(QPixmap(".\\stop.png")));
+    p_StopButton = new PixmapButton(QPixmap(".\\stop.png"),QSize(40,40),this);
+    p_StopButton->move(180,15);
     connect(p_StopButton ,SIGNAL(clicked()), SLOT(StopButtonSlot()));
 
-    p_SeekSlider  = new Phonon::SeekSlider();
+    p_ReplayTrackButton = new MyCheckableButton(QPixmap(".\\replayTurnOn.png"), QPixmap(".\\replay.png"),this);
+    p_ReplayTrackButton->move(335,23);
+    p_ReplayTrackButton->SetSize(QSize(25,25));
+    connect(p_ReplayTrackButton,SIGNAL(clicked()),SLOT(ReplayButtonClickSlot()));
 
-    p_VolumeSlider = new Phonon::VolumeSlider();
+    p_RandomPlayButton = new MyCheckableButton(QPixmap(".\\randomTurnOn.png"),QPixmap(".\\random.png"),this);
+    p_RandomPlayButton->move(380,23);
+    p_RandomPlayButton->SetSize(QSize(25,25));
+    connect(p_RandomPlayButton,SIGNAL(clicked()),SLOT(RandomPlayButtonClickeSlot()));
+
+
+    //volume window setup
+    p_VolumeSliderWidget = new TitleWidget(this);
+    p_VolumeSliderWidget->SetTitleText(QString("Volume"));
+    p_VolumeSliderWidget->setFixedSize((QSize(150,50)));
+    p_VolumeSliderWidget->move(315,8);
+    p_VolumeSliderWidget->hide();
+    p_VolumeSliderWidget->TitleMove(QPoint(10,4));
+    p_VolumeSliderWidget->SetTitleFont(QFont("Bauhaus 93",9,QFont::Normal));
+    connect(p_SeekSliderButton,SIGNAL(clicked()),SLOT(VolumButtonClickSlot()));
+
+    p_VolumeSlider = new Phonon::VolumeSlider(p_VolumeSliderWidget);
     p_VolumeSlider->setAudioOutput(p_AudioOutput);
     p_VolumeSlider->setMuteVisible(false);
-    //p_VolumeSlider->setMaximumHeight(40);
+    p_VolumeSlider->move(10,22);
+    p_VolumeSlider->setFixedWidth(100);
 
-    //Layouts setap
-    QHBoxLayout *p_HControlElementsLayout = new QHBoxLayout();
-    p_HControlElementsLayout->setSpacing(0);
-    p_HControlElementsLayout->addWidget(p_ReplayTrackButton);
-    p_HControlElementsLayout->addWidget(p_PrevTrackButton);
-    p_HControlElementsLayout->addWidget(p_PlayPauseButton);
-    p_HControlElementsLayout->addWidget(p_StopButton);
-    p_HControlElementsLayout->addWidget(p_NextTrackButton);
-    p_HControlElementsLayout->addWidget(p_RandomPlayButton);
+    //seek slider window setup
+    p_SeekSliderWidget = new TitleWidget(this);
+    p_SeekSliderWidget->SetTitleText(QString("Seek slider"));
+    p_SeekSliderWidget->setFixedSize((QSize(330,50)));
+    p_SeekSliderWidget->move(50,8);
+    p_SeekSliderWidget->hide();
+    p_SeekSliderWidget->TitleMove(QPoint(10,4));
+    p_SeekSliderWidget->SetTitleFont(QFont("Bauhaus 93",9,QFont::Normal));    
+    connect(p_SeekSliderButton,SIGNAL(clicked()),SLOT(SeekSliderButtonClickSlot()));
 
-    p_playerLayout = new QGridLayout();
-    p_playerLayout->setSpacing(0);
-    //p_playerLayout->addWidget(p_SeekSlider,1,0,1,10);
-    p_playerLayout->addLayout(p_HControlElementsLayout,0,2,1,4);
-    p_playerLayout->addWidget(p_VolumeSlider,0,8,1,2);
-    this->setLayout(p_playerLayout);
+    p_SeekSlider  = new Phonon::SeekSlider(p_SeekSliderWidget);
+    p_SeekSlider->setFixedWidth(320);
+    p_SeekSlider->move(10,22);
 
-    p_ConectedPlayList = NULL;   //playlist didnt connected
+    //
+    p_ConectedSongsList = NULL;   //playlist didnt connected
 }
 
 //methods
-void AudioPlayerWidget::SetMediaObject(Phonon::MediaObject *p_CurrentMediaObject)
+void AudioPlayerWidget::SetMediaObject(Phonon::MediaObject *p_Object)
 {
-   //disconnect(p_AudioObject,SIGNAL(finished()),this,SLOT(TracTrackFinishedSlot()));
-   p_AudioObject = p_CurrentMediaObject;   
-   connect(p_AudioObject,SIGNAL(finished()),SLOT(TrackFinishedSlot()));
-   Phonon::createPath(p_AudioObject,p_AudioOutput);     //connect audioobject with audiooutput
+   p_AudioObject->stop();
+   if(p_ConectedSongsList->GetPlayTrack())
+   {
+       disconnect(p_AudioObject,SIGNAL(finished()),this,SLOT(PlayNextTrackSlot()));
+   }
+   p_AudioObject = p_Object;
+   SeekSliderMediaObjectSet(p_AudioObject);
+   connect(p_AudioObject,SIGNAL(finished()),SLOT(PlayNextTrackSlot()));
+   while(p_AudioObject->state() == Phonon::LoadingState){};  //wait while audio object will ready for play
 }
 void AudioPlayerWidget::ConnectPlaylist(PlaylistWidget *p_Playlist)
 {
-    p_ConectedPlayList = p_Playlist;
-    connect(p_ConectedPlayList,SIGNAL(TrackButtonClickSignal()),SLOT(PlaylistTrackClickSlot()));
+    p_ConectedSongsList = p_Playlist->GetSongsList();
+    connect(p_ConectedSongsList,SIGNAL(TrackButtonClickSignal()),SLOT(PlaylistTrackClickSlot()));
+
 }
-void AudioPlayerWidget::SeekSliderMediaObjectSet()
+void AudioPlayerWidget::SeekSliderMediaObjectSet(Phonon::MediaObject *p_Object)
 {
-    Phonon::State currentTrackState = p_AudioObject->state();
-
-    p_AudioObject->pause();
-    p_SeekSlider->setMediaObject(p_AudioObject);
-
-    if(currentTrackState == Phonon::PlayingState)
-    {
-        p_AudioObject->play();
-    }
-    else
-    {
-        if(currentTrackState == Phonon::StoppedState)
-        {
-            p_AudioObject->stop();
-        }
-    }
-    p_SeekSlider->show();
+    p_Object->pause();
+    p_SeekSlider->setMediaObject(p_Object);
 }
+void AudioPlayerWidget::SetAudioOutput(Phonon::AudioOutput *p_Output)
+{
+    qreal currentVolume = p_AudioOutput->volume();
+    p_Output->setVolume(currentVolume);
+    p_AudioOutput = p_Output;
+    p_VolumeSlider->setAudioOutput(p_Output);
+}
+void AudioPlayerWidget::ConnectTrack(Track* p_Track)
+{
+    SetMediaObject(p_Track->GetAudioObject());
+    SetAudioOutput(p_Track->GetAudioOutput());
+}
+
 //slots
 void AudioPlayerWidget::PlayPauseButtonClickSlot()
 {
-    //disconnect(p_AudioObject,SIGNAL(finished()),this,SLOT(TracTrackFinishedSlot()));
-
-    TrackButton* p_ActiveTrack = p_ConectedPlayList->GetActiveTrack();
-    Phonon::MediaObject *p_ActiveTrackObject = p_ActiveTrack->GetTrackObject();
-    if(p_AudioObject != p_ActiveTrackObject)
+    if(p_ConectedSongsList)
     {
-        p_AudioObject->stop();
-        if(TrackButton* p_PrevPlayTrack = p_ConectedPlayList->GetPlayTrack())
+        TrackButton* p_SelectedTrackButton = p_ConectedSongsList->GetSelectedTrack();         //get selected track from playlist
+        Phonon::MediaObject *p_SelectedTrackObject = p_SelectedTrackButton->GetTrack()->GetAudioObject();
+        if(p_AudioObject != p_SelectedTrackObject)      //if selected track is played
         {
-            p_PrevPlayTrack->SetPlayStatus(false);
-        }
+            this->ConnectTrack(p_SelectedTrackButton->GetTrack());         //set media object and audiooutput of selected track for playing
+            p_SelectedTrackButton->SetPlayStatus(true);
 
-        this->SetMediaObject(p_ActiveTrackObject);
-        p_ActiveTrack->SetPlayStatus(true);
-        SeekSliderMediaObjectSet();    //connect seekslider object with audio object
-        p_ConectedPlayList->SetPlayTrackIndex(p_ConectedPlayList->GetTrackIndex(p_ActiveTrackObject)); //save play track index
+            if(TrackButton* p_PrevPlayTrackButton = p_ConectedSongsList->GetPlayTrack())   // if before there was track then played
+            {
+                p_PrevPlayTrackButton->SetPlayStatus(false);
+            }
+
+            p_ConectedSongsList->SetPlayTrackIndex(p_ConectedSongsList->GetTrackIndex(p_SelectedTrackObject)); //save playing track index
+        }
     }
 
-    //change the icon of play-pause button and chage playing state
+    //change the icon of play-pause button and change playing state of track
     if(p_AudioObject->state() == Phonon::PlayingState)
     {
         p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\play.png")));
@@ -144,13 +153,14 @@ void AudioPlayerWidget::PlayPauseButtonClickSlot()
 void AudioPlayerWidget::StopButtonSlot()
 {
     p_AudioObject->stop();
+    p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\play.png")));
 }
 void AudioPlayerWidget::PlaylistTrackClickSlot()
 {
-    TrackButton* p_ActiveTrack = p_ConectedPlayList->GetActiveTrack();
-    Phonon::MediaObject *p_ActiveTrackObject = p_ActiveTrack->GetTrackObject();
+    TrackButton* p_SelectedTrackButton = p_ConectedSongsList->GetSelectedTrack();
+    Phonon::MediaObject *p_SelectedTrackObject = p_SelectedTrackButton->GetTrack()->GetAudioObject();
 
-    if(p_ActiveTrackObject == p_AudioObject && p_AudioObject->state() == Phonon::PlayingState)
+    if(p_SelectedTrackObject == p_AudioObject && p_AudioObject->state() == Phonon::PlayingState)
     {
         p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\pause.png")));
     }
@@ -159,45 +169,44 @@ void AudioPlayerWidget::PlaylistTrackClickSlot()
         p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\play.png")));
     }
 }
-void AudioPlayerWidget::TrackFinishedSlot()
+void AudioPlayerWidget::PlayNextTrackSlot()
 {
-    if(p_ConectedPlayList)
+    if(p_ConectedSongsList)
     {
-        //disconnect(p_AudioObject,SIGNAL(finished()),this,SLOT(TracTrackFinishedSlot()));
+        p_AudioObject->stop();
+        if(p_ReplayTrackButton->isChecked())   //if turn on replay track state
+        {            
+            p_AudioObject->play();
+        }
+        else
+        {
+            Phonon::State  currentPlayState = p_AudioObject->state();  //save current playing state of track
 
-        TrackButton* p_PrevTrack = p_ConectedPlayList->GetPlayTrack();
-        p_PrevTrack->SetPlayStatus(false);
+            //set false play status for previous track and stop them
+            TrackButton* p_PrevPlayTrackButton = p_ConectedSongsList->GetPlayTrack();
+            p_PrevPlayTrackButton->SetPlayStatus(false);
 
-        TrackButton* p_NextTrack = p_ConectedPlayList->GetNextPlayTrack();
-        p_NextTrack->SetPlayStatus(true);
-        this->SetMediaObject(p_NextTrack->GetTrackObject());
-        SeekSliderMediaObjectSet();
+            //set next tack play status and play them
+            TrackButton* p_NextTrackButton;
+            if(p_RandomPlayButton->isChecked())
+            {
+                p_NextTrackButton = p_ConectedSongsList->GetNextPlayTrack(true);
+            }
+            else
+            {
+                p_NextTrackButton = p_ConectedSongsList->GetNextPlayTrack(false);
+            }
+            p_NextTrackButton->SetPlayStatus(true);
+            Track* p_NextTrack = p_NextTrackButton->GetTrack();
+            this->ConnectTrack(p_NextTrack);
 
-        p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\pause.png")));
-        p_AudioObject->play();
-    }
-    else
-    {
-        //plalist didnt conected
-    }
-}
-void AudioPlayerWidget::NextTrackButtonClickSlot()
-{
-    if(p_ConectedPlayList)
-    {
-        //disconnect(p_AudioObject,SIGNAL(finished()),this,SLOT(TracTrackFinishedSlot()));
-
-        TrackButton* p_PrevTrack = p_ConectedPlayList->GetPlayTrack();
-        p_PrevTrack->SetPlayStatus(false);
-        p_PrevTrack->GetTrackObject()->stop();
-
-        TrackButton* p_NextTrack = p_ConectedPlayList->GetNextPlayTrack();
-        p_NextTrack->SetPlayStatus(true);
-        this->SetMediaObject(p_NextTrack->GetTrackObject());
-        SeekSliderMediaObjectSet();
-
-        p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\pause.png")));
-        p_AudioObject->play();
+            if(currentPlayState == Phonon::PlayingState)
+            {
+                p_AudioObject->play();
+                p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\pause.png")));
+            }
+            p_ConectedSongsList->SetPlayTrackIndex(p_ConectedSongsList->GetTrackIndex(p_NextTrack->GetAudioObject()));
+        }
     }
     else
     {
@@ -206,32 +215,37 @@ void AudioPlayerWidget::NextTrackButtonClickSlot()
 }
 void AudioPlayerWidget::PrevTracButtonClickSlot()
 {
-    if(p_ConectedPlayList)
+    if(p_ConectedSongsList)
     {
-        //disconnect(p_AudioObject,SIGNAL(finished()),this,SLOT(TracTrackFinishedSlot()));
+        p_AudioObject->stop();
+        Phonon::State  currentPlayState = p_AudioObject->state();  //save current playing state of track
+        //set false play status for previous track and stop them
+        TrackButton* p_PrevTrackButton = p_ConectedSongsList->GetPlayTrack();
+        p_PrevTrackButton->SetPlayStatus(false);
 
-        TrackButton* p_PrevTrack = p_ConectedPlayList->GetPlayTrack();
-        p_PrevTrack->SetPlayStatus(false);
-        p_PrevTrack->GetTrackObject()->stop();
-        int prevTrackIndex = p_ConectedPlayList->GetPlayTrackIndex();
-
-        if(prevTrackIndex)   // set play index by back track
+        int prevTrackIndex = p_ConectedSongsList->GetPlayTrackIndex(); //specifies the index of
+        if(prevTrackIndex)   // set play index for back track on playlist
         {
-            p_ConectedPlayList->SetPlayTrackIndex(prevTrackIndex-1);
-
+            p_ConectedSongsList->SetPlayTrackIndex(prevTrackIndex-1);
         }
         else
         {
-            p_ConectedPlayList->SetPlayTrackIndex(p_ConectedPlayList->GetTracksQuantity());
+            p_ConectedSongsList->SetPlayTrackIndex(p_ConectedSongsList->GetTracksQuantity());
         }
 
-        TrackButton* p_BackTrack = p_ConectedPlayList->GetPlayTrack();  // get play track by setting index
-        p_BackTrack->SetPlayStatus(true);
-        this->SetMediaObject(p_BackTrack->GetTrackObject());
-        SeekSliderMediaObjectSet();
+        //set next tack play status and play them
+        TrackButton* p_NextTrackButton = p_ConectedSongsList->GetPlayTrack();
+        p_NextTrackButton->SetPlayStatus(true);
+        Track* p_NextTrack = p_NextTrackButton->GetTrack();
+        this->ConnectTrack(p_NextTrack);
 
-        p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\pause.png")));
-        p_AudioObject->play();
+        if(currentPlayState == Phonon::PlayingState)
+        {
+            p_AudioObject->play();
+            p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\pause.png")));
+        }
+
+        p_ConectedSongsList->SetPlayTrackIndex(p_ConectedSongsList->GetTrackIndex(p_NextTrack->GetAudioObject()));
     }
     else
     {
@@ -240,5 +254,65 @@ void AudioPlayerWidget::PrevTracButtonClickSlot()
 }
 void AudioPlayerWidget::VolumButtonClickSlot()
 {
+    if(p_VolumeButton->isChecked())
+    {
+        p_RandomPlayButton->hide();
+        p_ReplayTrackButton->hide();
 
+        p_VolumeSliderWidget->show();
+    }
+    else
+    {
+        p_RandomPlayButton->show();
+        p_ReplayTrackButton->show();
+
+        p_VolumeSliderWidget->hide();
+    }
+}
+void AudioPlayerWidget::SeekSliderButtonClickSlot()
+{
+    if(p_SeekSliderButton->isChecked())
+    {        
+        p_PlayPauseButton->hide();
+        p_StopButton->hide();
+        p_NextTrackButton->hide();
+        p_PrevTrackButton->hide();
+        p_VolumeButton->hide();
+
+        if(p_VolumeButton->isChecked()) //hide volume widget
+        {
+            emit p_VolumeButton->click();
+        }
+
+        p_RandomPlayButton->hide();
+        p_ReplayTrackButton->hide();
+
+        p_SeekSliderWidget->show();
+    }
+    else
+    {
+        p_PlayPauseButton->show();
+        p_StopButton->show();
+        p_NextTrackButton->show();
+        p_PrevTrackButton->show();
+        p_RandomPlayButton->show();
+        p_ReplayTrackButton->show();
+        p_VolumeButton->show();
+
+        p_SeekSliderWidget->hide();
+    }
+}
+void AudioPlayerWidget::RandomPlayButtonClickeSlot()
+{
+    if(p_ReplayTrackButton->isChecked())
+    {
+        p_ReplayTrackButton->SetCheckedState(false);
+    }
+}
+void AudioPlayerWidget::ReplayButtonClickSlot()
+{
+    if(p_RandomPlayButton->isChecked())
+    {
+        p_RandomPlayButton->SetCheckedState(false);
+    }
 }

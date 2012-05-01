@@ -8,8 +8,13 @@ MainWindow::MainWindow(QWidget *parent) : Window(parent)
     this->setAutoFillBackground(true);
     this->setPalette(*p_MainPalette);
     this->setFont(QFont("Bauhaus 93",10,QFont::Normal));
-    this->setFixedSize(526,630);
+    this->SetSize(QSize(526,620));
     this->setStyle(new QPlastiqueStyle());
+
+    //Logo setup
+    QLabel *p_TitleLabel = new QLabel("                          MaxPLayer. Only music...");
+    p_TitleLabel->setFont(QFont("Freestyle script",15,QFont::Normal));  //Chiller
+    p_TitleLabel->setParent(this);
 
     //control buttons setup
     p_PlaylistButton = new QPushButton("Playlist",this);
@@ -47,29 +52,19 @@ MainWindow::MainWindow(QWidget *parent) : Window(parent)
     //Player widget setup
     p_AudioPlayerWidget = new AudioPlayerWidget();
     p_AudioPlayerWidget->setParent(this);
-    p_AudioPlayerWidget->move(83,530);
+    p_AudioPlayerWidget->move(83,552);
 
     //Shifting widgets setup
-    QQueue<QUrl> songs;
-    songs << QUrl("D:\\Sound\\06. George Michael - Jesus To A Child.mp3");
-    songs << QUrl("D:\\vintazh_i_dj_smash_-_moskva_(zaycev.net).mp3");
-    songs << QUrl("D:\\February_session_2012.mp3");
-    songs << QUrl("D:\\the_beatles_-_yesterday.mp3");
-    songs << QUrl("D:\\Sound\\01. Black - Wonderful Life.mp3");
-    songs << QUrl("D:\\Sound\\02. Celine Dion - My Heart Will Go On.mp3");
-    songs << QUrl("D:\\Sound\\03. No Doubt - Don't Speak.mp3");
-    songs << QUrl("D:\\Sound\\04. Chris Isaak - Wicked Game.mp3");
-
-
-    p_PlaylistWidget = new PlaylistWidget(songs);
+    p_PlaylistWidget = new PlaylistWidget();
     p_LibraryWidget = new LibraryWidget();
     p_ExplorerWidget = new ExplorerWidget();
+    connect(p_ExplorerWidget,SIGNAL(AddSongsInPlaylistSignal()),SLOT(AddSongsInPlaylistSlot()));
+
     p_SettingWidget = new SettingWidget();
 
     //Shifting widgets stack setup
     p_ShiftingFieldWidgets = new QStackedWidget(this);
     p_ShiftingFieldWidgets->setFixedSize(432,522);
-    p_ShiftingFieldWidgets->setFrameStyle(QFrame::Box | QFrame::Sunken);
     p_ShiftingFieldWidgets->move(83,30);
     p_ShiftingFieldWidgets->addWidget(p_PlaylistWidget);
     p_ShiftingFieldWidgets->addWidget(p_LibraryWidget);
@@ -216,6 +211,14 @@ void MainWindow::SettingButtonClickedSlot()
     {
         p_SettingButton->setChecked(true);
     }
+}
+void MainWindow::AddSongsInPlaylistSlot()
+{
+    p_PlaylistWidget->Clear();
+    p_PlaylistWidget->OpenTracks(p_ExplorerWidget->GetSelectedSongs());
+    p_ExplorerWidget->ClearSelection();
+
+    emit p_PlaylistButton->click();
 }
 
 //methods

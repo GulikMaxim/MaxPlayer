@@ -42,12 +42,10 @@ bool MyCheckableButton::isChecked()
 void MyCheckableButton::SetTurnOnIcon(QPixmap pixmap)
 {
     p_TurnOnIcon->addPixmap(pixmap);
-    //this->setIcon(*p_TurnOnIcon);
 }
 void MyCheckableButton::SetTurnOffIcon(QPixmap pixmap)
 {
     p_TurnOffIcon->addPixmap(pixmap);
-    //this->setIcon(*p_TurnOffIcon);
 }
 void MyCheckableButton::SetSize(QSize size)
 {
@@ -71,12 +69,10 @@ void MyCheckableButton::MyCheckableButtonClickSlot()
 {
     if(this->isChecked())
     {
-        checked = false;
-        this->setIcon(*p_TurnOffIcon);
+        SetCheckedState(false);
     }
     else
     {
-        checked = true;
-        this->setIcon(*p_TurnOnIcon);
+        SetCheckedState(true);
     }
 }

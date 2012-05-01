@@ -1,7 +1,6 @@
 INPUT(
 ./release\main.o
 ./release\mainwindow.o
-./release\playlistwidget.o
 ./release\audioplayerwidget.o
 ./release\trackbutton.o
 ./release\window.o
@@ -9,8 +8,15 @@ INPUT(
 ./release\settingwidget.o
 ./release\librarywidget.o
 ./release\mycheckablebutton.o
+./release\titlewidget.o
+./release\songslistwidget.o
+./release\playlistwidget.o
+./release\track.o
+./release\pixmapbutton.o
+./release\playlist.o
+./release\playlistbutton.o
+./release\playlistslistwidget.o
 ./release\moc_mainwindow.o
-./release\moc_playlistwidget.o
 ./release\moc_audioplayerwidget.o
 ./release\moc_trackbutton.o
 ./release\moc_window.o
@@ -18,4 +24,10 @@ INPUT(
 ./release\moc_settingwidget.o
 ./release\moc_librarywidget.o
 ./release\moc_mycheckablebutton.o
+./release\moc_titlewidget.o
+./release\moc_songslistwidget.o
+./release\moc_playlistwidget.o
+./release\moc_pixmapbutton.o
+./release\moc_playlistbutton.o
+./release\moc_playlistslistwidget.o
 );

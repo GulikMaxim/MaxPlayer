@@ -1,113 +1,142 @@
 #include "playlistwidget.h"
 
-PlaylistWidget::PlaylistWidget(QQueue<QUrl> songListUrls,QWidget *parent) : QScrollArea(parent)
+PlaylistWidget::PlaylistWidget(QWidget *parent) :
+    TitleWidget(parent)
 {
-    //widget setup
-    this->setFixedSize(430,520);
-    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+    //title setup
+    this->setFixedSize(432,522);
+    this->SetTitleText("Menu");
+    this->SetTitleFont(QFont("Bauhaus 93",9,QFont::Normal));
+    this->TitleMove(QPoint(372,2));
+    this->ShowTitle(false);
+
+    //background setup
     QPalette *p_PlaylistPalette = new QPalette(Qt::cyan,Qt::black);               // set font's and backgrod colors
-    p_PlaylistPalette->setBrush(this->backgroundRole(),QBrush(QPixmap("shifftingWidgetBackgraund.jpg")));
+    p_PlaylistPalette->setBrush(this->backgroundRole(),QBrush(QPixmap("EmptyBackgraund.jpg")));
     this->setAutoFillBackground(true);
     this->setPalette(*p_PlaylistPalette);
 
-    OpenTracks(songListUrls);
-    FillInTracksListWidget();
-    playTrackIndex = -1;     // no one track didnt play
-}
-//methods
-void PlaylistWidget::FillInTracksListWidget()
-{
-   QPoint trackPosition(3,1);
-   foreach(TrackButton* p_TrackButton, tracksList)
-   {
-       p_TrackButton->setParent(this);
-       p_TrackButton->move(trackPosition);
-       trackPosition.setY(trackPosition.y()+ 50);
-   }
-}
-void PlaylistWidget::OpenTracks(QQueue<QUrl> songsUrls)
-{
-    foreach(QUrl songUrl, songsUrls)
-    {
-        TrackButton *p_TrackButton = new TrackButton();
-        p_TrackButton->OpenTrack(songUrl);
-        tracksList<<p_TrackButton;
-        connect(p_TrackButton->GetTrackObject(),SIGNAL(finished()),SIGNAL(trackFinishedSignal));
-        connect(p_TrackButton,SIGNAL(clicked()),SLOT(TrackButtonClickSlot()));
-    }
+    p_SongList = new SongsListWidget(this);
+    p_SongList->move(0,-1);
+    connect(p_SongList,SIGNAL(songListChangedSignal()),SLOT(SongListChangedSlot()));
 
-    activTrackIndex = 0; // set first track in list current
-    tracksList[0]->SetActiveStatus(true);
+    //playlist menu setup
+    p_PlayListMenuButton = new MyCheckableButton(QPixmap("MenuTurnOn.png"),QPixmap("Menu.png"),this);
+    p_PlayListMenuButton->move(416,20);
+    p_PlayListMenuButton->SetSize(QSize(16,16));
+    connect(p_PlayListMenuButton,SIGNAL(clicked()),SLOT(PlaylistMenuButtonClickSlot()));
+
+    p_DeleteTracksButton= new PixmapButton(QPixmap("DeleteTracks.png"),QSize(36,36),this);
+    p_DeleteTracksButton->move(382,82);
+    p_DeleteTracksButton->hide();
+    connect(p_DeleteTracksButton,SIGNAL(clicked()),p_SongList,SLOT(RemoveSelectedTracksSlot()));
+
+    p_MultiSellectionCheckBox = new QCheckBox("MultiList",this);
+    p_MultiSellectionCheckBox->setFont(QFont("Bauhaus 93",8,QFont::Normal));
+    p_MultiSellectionCheckBox->move(371,40);
+    p_MultiSellectionCheckBox->setStyle(new QPlastiqueStyle());
+    QPalette *p_CorrectionCheckBoxPalette = new QPalette();
+    p_CorrectionCheckBoxPalette->setBrush(QPalette::Base,QBrush(Qt::darkCyan));
+    p_MultiSellectionCheckBox->setPalette(*p_CorrectionCheckBoxPalette);
+    p_MultiSellectionCheckBox->hide();
+    connect(p_MultiSellectionCheckBox,SIGNAL(clicked()),SLOT(MultiSellectionCheckBoxChangeSlot()));
+
+    p_SavePlaylistButton = new PixmapButton(QPixmap("SavePlaylist.png"),QSize(36,36),this);
+    p_SavePlaylistButton->move(382,138);
+    p_SavePlaylistButton->hide();
+
+    p_LeaveTracksButton= new PixmapButton(QPixmap("LeaveSongs.png"),QSize(36,36),this);
+    p_LeaveTracksButton->move(382,196);
+    p_LeaveTracksButton->hide();
+    connect(p_LeaveTracksButton,SIGNAL(clicked()),p_SongList,SLOT(LeaveSelectedTracksSlot()));    
+
+    this->OpenMenu(false);
 }
-TrackButton* PlaylistWidget::GetActiveTrack()
+
+//methods
+SongsListWidget* PlaylistWidget::GetSongsList()
 {
-    return tracksList[activTrackIndex];
+    return p_SongList;
 }
-TrackButton* PlaylistWidget::GetNextPlayTrack(bool randomGanneration)
+void PlaylistWidget::OpenMenu(bool openStatus)
 {
-    TrackButton* p_NextTrack;
-    int lastIndex = tracksList.size()-1 ;
-    if(!randomGanneration)
+    QTime t;
+    if(openStatus)
     {
-        if(playTrackIndex!=lastIndex)
+        for(int width=416;width>=370;width--)    //delay for smooth opening
         {
-            playTrackIndex++;
-        }
-        else
-        {
-            playTrackIndex=0;
+            t.start();
+            for(;t.elapsed()<2;){}
+            p_SongList->SetFixedWidth(width);
+            QApplication::processEvents();
         }
     }
     else
     {
-        //random generation
-    }
-    p_NextTrack = tracksList[playTrackIndex];
-    return p_NextTrack;
-}
-int PlaylistWidget::GetTracksQuantity()
-{
-    return tracksList.size()-1;
-}
-TrackButton* PlaylistWidget::GetPlayTrack()
-{
-    if(playTrackIndex != -1)    //  if player play not first track
-    {
-        return tracksList[playTrackIndex];
-    }
-    else
-    {
-        return NULL;
+        for(int width=370;width<=416;width++)    //delay for smooth opening
+        {
+            t.start();
+            for(;t.elapsed()<2;){}
+            p_SongList->SetFixedWidth(width);
+            QApplication::processEvents();
+        }
     }
 }
-int PlaylistWidget::GetTrackIndex(Phonon::MediaObject* p_PlayTrackObject)
+void PlaylistWidget::OpenTracks(QList<QUrl> songsUrls)
 {
-    int currentPlayTrackIndex=0;
-    foreach(TrackButton* p_Track,tracksList)
-    {
-        if(p_Track->GetTrackObject() == p_PlayTrackObject)
-            break;
-        currentPlayTrackIndex++;
-    }
-    return currentPlayTrackIndex;
+    p_SongList->OpenTracks(songsUrls);
 }
-int PlaylistWidget::GetPlayTrackIndex()
+void PlaylistWidget::Clear()
 {
-    return playTrackIndex;
-}
-void PlaylistWidget::SetPlayTrackIndex(int trackIndex)
-{
-    playTrackIndex = trackIndex;
+    p_SongList->Clear();
 }
 //slots
-void PlaylistWidget::TrackButtonClickSlot()
+void PlaylistWidget::PlaylistMenuButtonClickSlot()
 {
-    TrackButton* p_PreviousActiveTrack = this->GetActiveTrack();    
-    TrackButton* p_ClickedTrackButton = (TrackButton*)sender();
-    p_PreviousActiveTrack->SetActiveStatus(false);
-    p_ClickedTrackButton->SetActiveStatus(true);
-    activTrackIndex = this->GetTrackIndex(p_ClickedTrackButton->GetTrackObject());
-
-    emit TrackButtonClickSignal();
+    if(p_PlayListMenuButton->isChecked())
+    {
+        this->ShowTitle(true);
+        this->OpenMenu(true);
+        p_MultiSellectionCheckBox->show();
+        p_SavePlaylistButton->show();
+        p_DeleteTracksButton->show();
+        p_LeaveTracksButton->show();
+    }
+    else
+    {
+        p_SavePlaylistButton->hide();
+        p_DeleteTracksButton->hide();
+        p_LeaveTracksButton->hide();
+        p_MultiSellectionCheckBox->hide();
+        this->OpenMenu(false);
+        this->ShowTitle(false);
+    }
+}
+void PlaylistWidget::MultiSellectionCheckBoxChangeSlot()
+{
+    if(p_MultiSellectionCheckBox->checkState() == Qt::Checked)
+    {
+        p_SongList->SetMultiSelectedMode(true);
+    }
+    else
+    {
+        p_SongList->SetMultiSelectedMode(false);
+    }
+}
+void PlaylistWidget::SongListChangedSlot()
+{
+    if(p_SongList->isEmpty())
+    {
+        QPalette *p_PlaylistPalette = new QPalette(Qt::cyan,Qt::black);               // set font's and backgrod colors
+        p_PlaylistPalette->setBrush(this->backgroundRole(),QBrush(QPixmap("PlayListEmptyBackgraund.jpg")));
+        this->setAutoFillBackground(true);
+        this->setPalette(*p_PlaylistPalette);
+    }
+    else
+    {
+        QPalette *p_PlaylistPalette = new QPalette(Qt::cyan,Qt::black);               // set font's and backgrod colors
+        p_PlaylistPalette->setBrush(this->backgroundRole(),QBrush(QPixmap("shifftingWidgetBackgraund.jpg")));
+        this->setAutoFillBackground(true);
+        this->setPalette(*p_PlaylistPalette);
+    }
 }

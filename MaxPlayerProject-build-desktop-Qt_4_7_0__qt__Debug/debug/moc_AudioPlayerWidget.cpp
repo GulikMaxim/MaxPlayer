@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'audioplayerwidget.h'
 **
-** Created: Tue 17. Apr 11:53:31 2012
+** Created: Tue 1. May 16:02:40 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ static const uint qt_meta_data_AudioPlayerWidget[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-       7,   14, // methods
+       9,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -36,8 +36,10 @@ static const uint qt_meta_data_AudioPlayerWidget[] = {
       63,   18,   18,   18, 0x0a,
       88,   18,   18,   18, 0x0a,
      108,   18,   18,   18, 0x0a,
-     135,   18,   18,   18, 0x0a,
-     161,   18,   18,   18, 0x0a,
+     134,   18,   18,   18, 0x0a,
+     157,   18,   18,   18, 0x0a,
+     185,   18,   18,   18, 0x0a,
+     214,   18,   18,   18, 0x0a,
 
        0        // eod
 };
@@ -45,9 +47,11 @@ static const uint qt_meta_data_AudioPlayerWidget[] = {
 static const char qt_meta_stringdata_AudioPlayerWidget[] = {
     "AudioPlayerWidget\0\0PlayPauseButtonClickSlot()\0"
     "StopButtonSlot()\0PlaylistTrackClickSlot()\0"
-    "TrackFinishedSlot()\0NextTrackButtonClickSlot()\0"
-    "PrevTracButtonClickSlot()\0"
+    "PlayNextTrackSlot()\0PrevTracButtonClickSlot()\0"
     "VolumButtonClickSlot()\0"
+    "SeekSliderButtonClickSlot()\0"
+    "RandomPlayButtonClickeSlot()\0"
+    "ReplayButtonClickSlot()\0"
 };
 
 const QMetaObject AudioPlayerWidget::staticMetaObject = {
@@ -82,13 +86,15 @@ int AudioPlayerWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         case 0: PlayPauseButtonClickSlot(); break;
         case 1: StopButtonSlot(); break;
         case 2: PlaylistTrackClickSlot(); break;
-        case 3: TrackFinishedSlot(); break;
-        case 4: NextTrackButtonClickSlot(); break;
-        case 5: PrevTracButtonClickSlot(); break;
-        case 6: VolumButtonClickSlot(); break;
+        case 3: PlayNextTrackSlot(); break;
+        case 4: PrevTracButtonClickSlot(); break;
+        case 5: VolumButtonClickSlot(); break;
+        case 6: SeekSliderButtonClickSlot(); break;
+        case 7: RandomPlayButtonClickeSlot(); break;
+        case 8: ReplayButtonClickSlot(); break;
         default: ;
         }
-        _id -= 7;
+        _id -= 9;
     }
     return _id;
 }

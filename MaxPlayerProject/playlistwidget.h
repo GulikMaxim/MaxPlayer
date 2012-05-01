@@ -3,37 +3,42 @@
 
 #include <QWidget>
 #include <QtGui>
-#include <trackbutton.h>
-#include <phonon>
+#include <SongsListWidget.h>
+#include <mycheckablebutton.h>
+#include <titlewidget.h>
+#include <pixmapbutton.h>
 
-class PlaylistWidget : public QScrollArea
+class PlaylistWidget : public TitleWidget
 {
     Q_OBJECT
 
-    QQueue <TrackButton*> tracksList;           // queue of mediaobjects for opening songs by urls
-    //TrackButton *p_CurrentActiveTrack;
-    int activTrackIndex;
-    int playTrackIndex;
+private:
+    SongsListWidget *p_SongList;
+
+
+    PixmapButton *p_DeleteTracksButton;
+    PixmapButton *p_SavePlaylistButton;
+    PixmapButton *p_LeaveTracksButton;
+    QCheckBox *p_MultiSellectionCheckBox;
+    MyCheckableButton* p_PlayListMenuButton;
 
 public:
-    explicit PlaylistWidget(QQueue<QUrl> songListUrl, QWidget *parent = 0);
-    void FillInTracksListWidget();
-    void OpenTracks(QQueue<QUrl> songsUrls);
-    TrackButton* GetActiveTrack();
-    TrackButton* GetNextPlayTrack(bool randomGanneration = false);
+    explicit PlaylistWidget(QWidget *parent = 0);
 
-    TrackButton* GetPlayTrack();
-    int GetPlayTrackIndex();
-    void SetPlayTrackIndex(int trackIndex);
-    int GetTrackIndex(Phonon::MediaObject* p_PlayTrackObject);
-    int GetTracksQuantity();
+    SongsListWidget* GetSongsList();
+    void OpenMenu(bool openStatus);
+    void OpenTracks(QList<QUrl> songsUrls);
     
 signals:
-    void TrackButtonClickSignal();
-    void trackFinishedSignal();
-    
+
 public slots:
-    void TrackButtonClickSlot();
+    void PlaylistMenuButtonClickSlot();
+    void MultiSellectionCheckBoxChangeSlot();
+    void Clear();
+
+private slots:
+    void SongListChangedSlot();
+
     
 };
 

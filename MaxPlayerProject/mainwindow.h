@@ -41,11 +41,12 @@ public:
     
 signals:
     
-public slots:
+private slots:
     void PlaylistButtonClickedSlot();
     void LibraryButtonClickedSlot();
     void ExplorerButtonClickedSlot();
     void SettingButtonClickedSlot();
+    void AddSongsInPlaylistSlot();
 };
 
 #endif // MAINWINDOW_H

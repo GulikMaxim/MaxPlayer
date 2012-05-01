@@ -5,6 +5,10 @@
 #include <phonon>
 #include <playlistwidget.h>
 #include <mycheckablebutton.h>
+#include <window.h>
+#include <titlewidget.h>
+#include <track.h>
+#include <pixmapbutton.h>
 
 class AudioPlayerWidget : public QWidget
 {
@@ -12,31 +16,34 @@ class AudioPlayerWidget : public QWidget
 
     Phonon::MediaObject *p_AudioObject;
     Phonon::AudioOutput *p_AudioOutput;
-    PlaylistWidget *p_ConectedPlayList;       // playlist that is play in player
+    SongsListWidget *p_ConectedSongsList;       // songs list that is play in player
 
     Phonon::SeekSlider *p_SeekSlider;
     Phonon::VolumeSlider *p_VolumeSlider;
 
-    QPushButton *p_PlayPauseButton;
-    QPushButton *p_StopButton;
-    QPushButton *p_NextTrackButton;
-    QPushButton *p_PrevTrackButton;    
+    PixmapButton *p_PlayPauseButton;
+    PixmapButton *p_StopButton;
+    PixmapButton *p_NextTrackButton;
+    PixmapButton *p_PrevTrackButton;
     MyCheckableButton *p_ReplayTrackButton;
-    MyCheckableButton *p_RandomPlayButton;
+    MyCheckableButton *p_RandomPlayButton;    
     MyCheckableButton *p_VolumeButton;
+    MyCheckableButton *p_SeekSliderButton;
 
-    QGridLayout *p_playerLayout;
+    TitleWidget *p_VolumeSliderWidget;
+    TitleWidget *p_SeekSliderWidget;
 
 public:
     AudioPlayerWidget(QWidget *parent = 0);
     AudioPlayerWidget(QList<QUrl> songList, QWidget *parent = 0);
 
-    void SetMediaObject(Phonon::MediaObject *p_CurrentMediaObject);
+    void SetMediaObject(Phonon::MediaObject *p_Object);
     void ConnectPlaylist(PlaylistWidget *p_Playlist);    //connect with playlistwidget object
+    void SetAudioOutput(Phonon::AudioOutput *p_Output);
+    void ConnectTrack(Track* p_Track);
 
 private:
-    void SeekSliderMediaObjectSet();   //connect seekslider object with audio object
-    //void SetCurrentActivePlaylistTrack();   //get selected object from playlist
+    void SeekSliderMediaObjectSet(Phonon::MediaObject *p_Object);   //connect seekslider object with audio object
 
 signals:
 
@@ -44,10 +51,12 @@ public slots:
     void PlayPauseButtonClickSlot();
     void StopButtonSlot();
     void PlaylistTrackClickSlot();
-    void TrackFinishedSlot();
-    void NextTrackButtonClickSlot();
+    void PlayNextTrackSlot();
     void PrevTracButtonClickSlot();
     void VolumButtonClickSlot();
+    void SeekSliderButtonClickSlot();
+    void RandomPlayButtonClickeSlot();
+    void ReplayButtonClickSlot();
     
 };
 

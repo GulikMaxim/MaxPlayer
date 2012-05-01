@@ -5,39 +5,46 @@ Window::Window(QWidget *parent) :
 {
     //window setup
     this->setWindowFlags(Qt::FramelessWindowHint);
-    this->setFrameStyle(QFrame::Plain | QFrame::Box);
+    this->setFixedSize(526,620);
 
-    //Logo setup
-    QLabel *p_LogoLabel = new QLabel(this);
-    p_LogoLabel->setFont(QFont("Freestyle script",15,QFont::Normal));  //Chiller
-    //p_LogoLabel->setFixedSize(150,20);
-    p_LogoLabel->setText("                          MaxPLayer. Only music...");
-    p_LogoLabel->move(0,3);
+//    //Logo setup
+//    p_TitleLabel = new QLabel(this);
+//    p_TitleLabel->setFont(QFont("Freestyle script",15,QFont::Normal));  //Chiller
+//    p_TitleLabel->setText("                          MaxPLayer. Only music...");
+//    p_TitleLabel->move(0,3);
+//    p_TitleLabel->setPalette(QPalette(Qt::white,Qt::cyan));
 
     //Control and window buttons setup
-    QPushButton *p_CloseWindowButton = new QPushButton(this);
+    p_CloseWindowButton = new QPushButton(this);
     p_CloseWindowButton->setFlat(true);
     p_CloseWindowButton->setFixedSize(20,20);
     p_CloseWindowButton->setIconSize(QSize(16,16));
     p_CloseWindowButton->setIcon(QIcon(QPixmap(".\\close.png")));
-    p_CloseWindowButton->move(480,3);
+    p_CloseWindowButton->move(480,6);
     connect(p_CloseWindowButton,SIGNAL(clicked()),SLOT(close()));
+    connect(p_CloseWindowButton,SIGNAL(clicked()),SIGNAL(CloseWindowSignal()));
 
-    QPushButton *p_MinimizeWindowButton = new QPushButton(this);
+    p_MinimizeWindowButton = new QPushButton(this);
     p_MinimizeWindowButton->setFlat(true);
     p_MinimizeWindowButton->setFixedSize(20,20);
     p_MinimizeWindowButton->setIconSize(QSize(16,16));
     p_MinimizeWindowButton->setIcon(QIcon(QPixmap(".\\minimize.png")));
-    p_MinimizeWindowButton->move(500,3);
+    p_MinimizeWindowButton->move(500,6);
     connect(p_MinimizeWindowButton,SIGNAL(clicked()),SLOT(showMinimized()));
-
-    /*QGridLayout *p_ControlButtonsLayout = new QGridLayout();
-    p_ControlButtonsLayout->addWidget(p_LogoLabel,0,4,1,1);
-    p_ControlButtonsLayout->addWidget(p_CloseWindowButton,0,5,1,1);
-    p_ControlButtonsLayout->addWidget(p_MinimizeWindowButton,0,6,1,1);
-    this->setLayout(p_ControlButtonsLayout);*/
 }
 
+//methods
+void Window::SetSize(QSize size)
+{
+    this->setFixedSize(size);
+    p_CloseWindowButton->move(size.width()-50,6);
+    p_MinimizeWindowButton->move(size.width()-30,6);
+}
+void Window::HideControlButtons()
+{
+    p_CloseWindowButton->hide();
+    p_MinimizeWindowButton->hide();
+}
 //events
 void Window::mousePressEvent(QMouseEvent *p_MouseEvent)
 {

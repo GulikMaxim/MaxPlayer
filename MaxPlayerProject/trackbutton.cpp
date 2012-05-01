@@ -9,11 +9,11 @@ TrackButton::TrackButton(QWidget *parent) :  QPushButton(parent)
     isPlayStatus = false;
 
     //labels setup
-    p_ArtistNameLabel = new  QLabel("dfsdfsdfs",this);
+    p_ArtistNameLabel = new  QLabel(this);
     p_ArtistNameLabel->setFont(QFont("Constantia",9,QFont::Light));
     p_ArtistNameLabel->move(5,10);
 
-    p_TrackNameLabel = new QLabel("adfadfadf",this);
+    p_TrackNameLabel = new QLabel(this);
     p_TrackNameLabel->setFont(QFont("Constantia",11,QFont::Light));
     p_TrackNameLabel->move(5,25);
 
@@ -31,62 +31,49 @@ TrackButton::TrackButton(QWidget *parent) :  QPushButton(parent)
 
     this->SetPlayStatus(false);
     this->SetActiveStatus(false);
+
+    p_Track = NULL;
 }
 
 //Methods
 void TrackButton::SetActiveStatus(bool isActive)
 {
     isActiveStatus = isActive;
-    //QPalette trackButtonPalette = this->palette();
     if(isActiveStatus == true)
     {
-        //trackButtonPalette.setColor(QPalette::ButtonText,Qt::cyan);
         p_ActiveStatusLineLabel->show();
         p_ArtistNameLabel->move(10,10);
         p_TrackNameLabel->move(10,25);
     }
     else
     {
-        //trackButtonPalette.setColor(QPalette::ButtonText,Qt::white);
         p_ActiveStatusLineLabel->hide();
         p_ArtistNameLabel->move(5,10);
         p_TrackNameLabel->move(5,25);
     }
-    //this->setPalette(trackButtonPalette);
 }
 void TrackButton::SetPlayStatus(bool isPlay)
 {
     isPlayStatus = isPlay;
-    //QPalette trackButtonPalette = this->palette();
     if(isPlayStatus == true)
     {
-        //trackButtonPalette.setColor(QPalette::ButtonText,Qt::cyan);
-        //p_ActiveStatusLineLabel->show();
         p_PlayStatusTriangleLabel->show();
-        //p_ArtistNameLabel->move(20,10);
-        //p_TrackNameLabel->move(20,25);
     }
     else
     {
-        //trackButtonPalette.setColor(QPalette::ButtonText,Qt::white);
-        //p_ActiveStatusLineLabel->hide();
         p_PlayStatusTriangleLabel->hide();
-        //p_ArtistNameLabel->move(5,10);
-        //p_TrackNameLabel->move(5,25);
     }
-    //this->setPalette(trackButtonPalette);
 }
 void TrackButton::OpenTrack(QUrl trackUrl)
 {
-    p_AudioObject = new Phonon::MediaObject();
-    p_AudioObject->setCurrentSource(Phonon::MediaSource(trackUrl.toString()));
+    p_Track = new Track(trackUrl);
 
-    p_ArtistNameLabel->setText(/*p_AudioObject->metaData().value("ARTIST")*/QString("Not detected"));
-    p_TrackNameLabel->setText(/*p_AudioObject->metaData().value("TITLE")*/QString("Not detected"));
+    p_ArtistNameLabel->setText(p_Track->GetArtist());
+    p_TrackNameLabel->setText(p_Track->GetTitle());
 }
-Phonon::MediaObject* TrackButton::GetTrackObject()
+Track* TrackButton::GetTrack()
 {
-    return p_AudioObject;
+    return p_Track;
 }
 bool TrackButton::IsActive()
 {

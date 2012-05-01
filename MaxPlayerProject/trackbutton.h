@@ -2,19 +2,20 @@
 #define TRACKBUTTON_H
 
 #include <QtGui>
-#include <phonon>
+#include <track.h>
 
 class TrackButton : public QPushButton
 {
     Q_OBJECT
 
-    Phonon::MediaObject *p_AudioObject;
+    Track *p_Track;
 
     bool isPlayStatus;
     bool isActiveStatus;
 
     QLabel *p_ArtistNameLabel;
     QLabel *p_TrackNameLabel;
+
     QLabel *p_ActiveStatusLineLabel;
     QLabel *p_PlayStatusTriangleLabel;
 
@@ -25,7 +26,7 @@ public:
     void SetActiveStatus(bool isActive);
     void SetPlayStatus(bool isPlay);
     void OpenTrack(QUrl trackUrl);
-    Phonon::MediaObject* GetTrackObject();
+    Track* GetTrack();
     bool IsActive();
     bool IsPlay();
 

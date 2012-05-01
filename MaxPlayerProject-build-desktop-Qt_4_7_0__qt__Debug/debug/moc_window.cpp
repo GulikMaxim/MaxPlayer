@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'window.h'
 **
-** Created: Sat 31. Mar 16:25:31 2012
+** Created: Sun 22. Apr 21:53:38 2012
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.0)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -23,18 +23,21 @@ static const uint qt_meta_data_Window[] = {
        5,       // revision
        0,       // classname
        0,    0, // classinfo
-       0,    0, // methods
+       1,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       0,       // signalCount
+       1,       // signalCount
+
+ // signals: signature, parameters, type, tag, flags
+       8,    7,    7,    7, 0x05,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_Window[] = {
-    "Window\0"
+    "Window\0\0CloseWindowSignal()\0"
 };
 
 const QMetaObject Window::staticMetaObject = {
@@ -64,6 +67,19 @@ int Window::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QFrame::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        switch (_id) {
+        case 0: CloseWindowSignal(); break;
+        default: ;
+        }
+        _id -= 1;
+    }
     return _id;
+}
+
+// SIGNAL 0
+void Window::CloseWindowSignal()
+{
+    QMetaObject::activate(this, &staticMetaObject, 0, 0);
 }
 QT_END_MOC_NAMESPACE

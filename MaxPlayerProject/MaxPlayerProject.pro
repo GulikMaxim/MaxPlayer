@@ -13,22 +13,36 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     mainwindow.cpp \
-    playlistwidget.cpp \
     audioplayerwidget.cpp \
     trackbutton.cpp \
     window.cpp \
     explorerwidget.cpp \
     settingwidget.cpp \
     librarywidget.cpp \
-    mycheckablebutton.cpp
+    mycheckablebutton.cpp \
+    titlewidget.cpp \
+    songslistwidget.cpp \
+    playlistwidget.cpp \
+    track.cpp \
+    pixmapbutton.cpp \
+    playlist.cpp \
+    playlistbutton.cpp \
+    playlistslistwidget.cpp
 
 HEADERS  += \
     mainwindow.h \
-    playlistwidget.h \
     audioplayerwidget.h \
     trackbutton.h \
     window.h \
     explorerwidget.h \
     settingwidget.h \
     librarywidget.h \
-    mycheckablebutton.h
+    mycheckablebutton.h \
+    titlewidget.h \
+    songslistwidget.h \
+    playlistwidget.h \
+    track.h \
+    pixmapbutton.h \
+    playlist.h \
+    playlistbutton.h \
+    playlistslistwidget.h
