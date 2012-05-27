@@ -120,7 +120,7 @@ void AudioPlayerWidget::ConnectTrack(Track* p_Track)
 //slots
 void AudioPlayerWidget::PlayPauseButtonClickSlot()
 {
-    if(p_ConectedSongsList)
+    if(p_ConectedSongsList && p_ConectedSongsList->GetTrackButtonsList().size())
     {
         TrackButton* p_SelectedTrackButton = p_ConectedSongsList->GetSelectedTrack();         //get selected track from playlist
         Phonon::MediaObject *p_SelectedTrackObject = p_SelectedTrackButton->GetTrack()->GetAudioObject();
@@ -136,24 +136,27 @@ void AudioPlayerWidget::PlayPauseButtonClickSlot()
 
             p_ConectedSongsList->SetPlayTrackIndex(p_ConectedSongsList->GetTrackIndex(p_SelectedTrackObject)); //save playing track index
         }
-    }
 
-    //change the icon of play-pause button and change playing state of track
-    if(p_AudioObject->state() == Phonon::PlayingState)
-    {
-        p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\play.png")));
-        p_AudioObject->pause();
-    }
-    else
-    {
-        p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\pause.png")));
-        p_AudioObject->play();
+        //change the icon of play-pause button and change playing state of track
+        if(p_AudioObject->state() == Phonon::PlayingState)
+        {
+            p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\play.png")));
+            p_AudioObject->pause();
+        }
+        else
+        {
+            p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\pause.png")));
+            p_AudioObject->play();
+        }
     }
 }
 void AudioPlayerWidget::StopButtonSlot()
 {
-    p_AudioObject->stop();
-    p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\play.png")));
+    if(p_ConectedSongsList && p_ConectedSongsList->GetTrackButtonsList().size())
+    {
+        p_AudioObject->stop();
+        p_PlayPauseButton->setIcon(QIcon(QPixmap(".\\play.png")));
+    }
 }
 void AudioPlayerWidget::PlaylistTrackClickSlot()
 {
@@ -171,7 +174,7 @@ void AudioPlayerWidget::PlaylistTrackClickSlot()
 }
 void AudioPlayerWidget::PlayNextTrackSlot()
 {
-    if(p_ConectedSongsList)
+    if(p_ConectedSongsList && p_ConectedSongsList->GetTrackButtonsList().size())
     {
         p_AudioObject->stop();
         if(p_ReplayTrackButton->isChecked())   //if turn on replay track state
@@ -215,7 +218,7 @@ void AudioPlayerWidget::PlayNextTrackSlot()
 }
 void AudioPlayerWidget::PrevTracButtonClickSlot()
 {
-    if(p_ConectedSongsList)
+    if(p_ConectedSongsList && p_ConectedSongsList->GetTrackButtonsList().size())
     {
         p_AudioObject->stop();
         Phonon::State  currentPlayState = p_AudioObject->state();  //save current playing state of track

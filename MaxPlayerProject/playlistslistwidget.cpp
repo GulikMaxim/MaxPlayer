@@ -13,7 +13,6 @@ PlaylistsListWidget::PlaylistsListWidget(QWidget *parent) :
     p_EmbeddablePlaylistListWidget->setFixedSize(414,522);
     this->setWidget(p_EmbeddablePlaylistListWidget);
 
-
     SetMultiSelectedMode(false);
 }
 
@@ -77,7 +76,7 @@ void PlaylistsListWidget::ReadPlaylistsFrom(QString path)
                 Playlist *p_Playlist = new Playlist();
                 p_Playlist->ReadFrom(path,playlistName,false);
 
-                PlaylistButton *p_PlaylistButton = new PlaylistButton();
+                PlaylistButton *p_PlaylistButton = new PlaylistButton(/*p_EmbeddablePlaylistListWidget*/);
                 p_PlaylistButton->SetPlaylist(p_Playlist);
 
                 connect(p_PlaylistButton,SIGNAL(clicked()),SLOT(PlaylistButtonClickSlot()));
@@ -146,7 +145,32 @@ int PlaylistsListWidget::GetPlaylistIndex(Playlist *p_Playlist)
             break;
         currentPlaylistIndex++;
     }
-    return currentPlaylistIndex;
+    if(currentPlaylistIndex > playlistButtonsList.size()-1)
+    {
+        return -1;
+    }
+    else
+    {
+        return currentPlaylistIndex;
+    }
+}
+int PlaylistsListWidget::GetPlaylistIndex(QString playlistName)
+{
+    int currentPlaylistIndex=0;
+    foreach(PlaylistButton* p_PlaylistButton,playlistButtonsList)
+    {
+        if(p_PlaylistButton->GetPlaylist()->GetName() == playlistName)
+            break;
+        currentPlaylistIndex++;
+    }
+    if(currentPlaylistIndex > playlistButtonsList.size()-1)
+    {
+        return -1;
+    }
+    else
+    {
+        return currentPlaylistIndex;
+    }
 }
 void PlaylistsListWidget::SetPlaylistDirrectoryPath(QString path)
 {
@@ -155,6 +179,17 @@ void PlaylistsListWidget::SetPlaylistDirrectoryPath(QString path)
 QString PlaylistsListWidget::GetPlaylistDirrectoryPath()
 {
     return playlistsDirrectoryPath;
+}
+void PlaylistsListWidget::AddPlaylist(Playlist playlist)
+{
+    PlaylistButton *p_PlaylistButton = new PlaylistButton(p_EmbeddablePlaylistListWidget);
+    p_PlaylistButton->SetPlaylist(&playlist);
+    connect(p_PlaylistButton,SIGNAL(clicked()),SLOT(PlaylistButtonClickSlot()));
+    playlistButtonsList<<p_PlaylistButton;
+
+    //refresh playlistslist
+    this->Clear();
+    this->ReadPlaylistsFrom(this->playlistsDirrectoryPath);
 }
 //slots
 void PlaylistsListWidget::PlaylistButtonClickSlot()
@@ -180,6 +215,13 @@ void PlaylistsListWidget::PlaylistButtonClickSlot()
     else
     {
         //open playlist
+        Playlist* p_ClickedButtonPlaylist = p_ClickedPlaylistButton->GetPlaylist();
+        if(p_ClickedButtonPlaylist->isEmpty())
+        {
+            p_ClickedButtonPlaylist->ReadFrom(playlistsDirrectoryPath,p_ClickedButtonPlaylist->GetName());
+        }
+
+        emit PlaylistButtonClickedSignal(p_ClickedButtonPlaylist);
     }
 }
 void PlaylistsListWidget::RemoveSelectedPlaylistsSlot()
@@ -215,11 +257,12 @@ void PlaylistsListWidget::RemoveSelectedPlaylistsSlot()
     else
     {
         QString endLine;
-    #ifdef Q_OS_WIN
+
+#ifdef Q_OS_WIN
         endLine = QString("\r\n");
-    #else
+#else
         endLine = QString('\n');
-    #endif
+#endif
 
         QTextStream writeStream(&allPlaylistsFile);
         foreach(PlaylistButton* p_PlaylistButton, playlistButtonsList)
@@ -228,9 +271,9 @@ void PlaylistsListWidget::RemoveSelectedPlaylistsSlot()
         }
         allPlaylistsFile.close();
     }
-
-    //refresh playlistwidget
     FillInPlaylistsListWidget();
+
+
     if(!this->isEmpty())
     {
         selectedPlaylistsIndexes<<0;   // set select playlist on first

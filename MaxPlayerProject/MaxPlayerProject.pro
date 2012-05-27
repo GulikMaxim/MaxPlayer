@@ -17,7 +17,6 @@ SOURCES += main.cpp \
     trackbutton.cpp \
     window.cpp \
     explorerwidget.cpp \
-    settingwidget.cpp \
     librarywidget.cpp \
     mycheckablebutton.cpp \
     titlewidget.cpp \
@@ -27,7 +26,10 @@ SOURCES += main.cpp \
     pixmapbutton.cpp \
     playlist.cpp \
     playlistbutton.cpp \
-    playlistslistwidget.cpp
+    playlistslistwidget.cpp \
+    dialogwindow.cpp \
+    enterlinedialogwindow.cpp \
+    aboutwidget.cpp
 
 HEADERS  += \
     mainwindow.h \
@@ -35,7 +37,6 @@ HEADERS  += \
     trackbutton.h \
     window.h \
     explorerwidget.h \
-    settingwidget.h \
     librarywidget.h \
     mycheckablebutton.h \
     titlewidget.h \
@@ -45,4 +46,7 @@ HEADERS  += \
     pixmapbutton.h \
     playlist.h \
     playlistbutton.h \
-    playlistslistwidget.h
+    playlistslistwidget.h \
+    dialogwindow.h \
+    enterlinedialogwindow.h \
+    aboutwidget.h

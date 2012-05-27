@@ -7,6 +7,7 @@
 #include <mycheckablebutton.h>
 #include <titlewidget.h>
 #include <pixmapbutton.h>
+#include <playlist.h>
 
 class PlaylistWidget : public TitleWidget
 {
@@ -15,9 +16,7 @@ class PlaylistWidget : public TitleWidget
 private:
     SongsListWidget *p_SongList;
 
-
     PixmapButton *p_DeleteTracksButton;
-    PixmapButton *p_SavePlaylistButton;
     PixmapButton *p_LeaveTracksButton;
     QCheckBox *p_MultiSellectionCheckBox;
     MyCheckableButton* p_PlayListMenuButton;
@@ -27,7 +26,6 @@ public:
 
     SongsListWidget* GetSongsList();
     void OpenMenu(bool openStatus);
-    void OpenTracks(QList<QUrl> songsUrls);
     
 signals:
 

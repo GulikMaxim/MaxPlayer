@@ -21,8 +21,13 @@ ExplorerWidget::ExplorerWidget(QWidget *parent) :
     p_ExplorerMenuButton->SetSize(QSize(16,16));
     connect(p_ExplorerMenuButton,SIGNAL(clicked()),SLOT(ExplorerMenuButtonClickSlot()));
 
-    p_AddSongsInPlaylistButton= new PixmapButton(QPixmap("OpenTracks.png"),QSize(36,36),this);
-    p_AddSongsInPlaylistButton->move(382,50);
+    p_OpenSongsInPlaylistButton= new PixmapButton(QPixmap("OpenTracks.png"),QSize(36,36),this);
+    p_OpenSongsInPlaylistButton->move(382,50);
+    p_OpenSongsInPlaylistButton->hide();
+    connect(p_OpenSongsInPlaylistButton,SIGNAL(clicked()),SLOT(OpenSongsInPlaylistButtonClickSlot()));
+
+    p_AddSongsInPlaylistButton= new PixmapButton(QPixmap("AddTracks.png"),QSize(36,36),this);
+    p_AddSongsInPlaylistButton->move(382,108);
     p_AddSongsInPlaylistButton->hide();
     connect(p_AddSongsInPlaylistButton,SIGNAL(clicked()),SLOT(AddSongsInPlaylistButtonClickSlot()));
 
@@ -51,7 +56,8 @@ ExplorerWidget::ExplorerWidget(QWidget *parent) :
     p_TreeView->setSortingEnabled(true);
     p_TreeView->setSelectionMode(QAbstractItemView::MultiSelection);
 
-    //connect(p_TreeView,SIGNAL(clicked(QModelIndex)),SLOT(ElementClickedSlot(QModelIndex)));
+    this->OpenMenu(false);
+    p_ExplorerMenuButton->click();
 }
 
 //methods
@@ -85,39 +91,6 @@ void ExplorerWidget::OpenMenu(bool openStatus)
 }
 QList<QUrl> ExplorerWidget::GetSelectedSongs()
 {
-    return selectedSongs;
-}
-//slots
-void ExplorerWidget::ExplorerMenuButtonClickSlot()
-{
-    if(p_ExplorerMenuButton->isChecked())
-    {
-        this->ShowTitle(true);
-        this->OpenMenu(true);
-        p_AddSongsInPlaylistButton->show();
-    }
-    else
-    {
-        p_AddSongsInPlaylistButton->hide();
-        this->OpenMenu(false);
-        this->ShowTitle(false);
-    }
-}
-/*void ExplorerWidget::ElementClickedSlot(QModelIndex index)
-{
-    QFileInfo activeElement = p_DirModel->fileInfo(index);
-
-    if(activeElement.isFile())  //if active element is file
-    {
-        QUrl songPath(activeElement.absoluteFilePath());
-        if(!selectedSongs.removeOne(songPath))   //if it file has not been added to the selected songs list
-        {
-            selectedSongs<<songPath;
-        }
-    }
-}*/
-void ExplorerWidget::AddSongsInPlaylistButtonClickSlot()
-{
     QItemSelectionModel *p_SelectionModel= p_TreeView->selectionModel();
     QModelIndexList selectedIndexesList = p_SelectionModel->selectedRows();
 
@@ -135,5 +108,31 @@ void ExplorerWidget::AddSongsInPlaylistButtonClickSlot()
     }
     p_SelectionModel->clearSelection();
 
+    return selectedSongs;
+}
+//slots
+void ExplorerWidget::ExplorerMenuButtonClickSlot()
+{
+    if(p_ExplorerMenuButton->isChecked())
+    {
+        this->ShowTitle(true);
+        this->OpenMenu(true);
+        p_OpenSongsInPlaylistButton->show();
+        p_AddSongsInPlaylistButton->show();
+    }
+    else
+    {
+        p_AddSongsInPlaylistButton->hide();
+        p_OpenSongsInPlaylistButton->hide();
+        this->OpenMenu(false);
+        this->ShowTitle(false);
+    }
+}
+void ExplorerWidget::OpenSongsInPlaylistButtonClickSlot()
+{
+    emit OpenSongsInPlaylistSignal();
+}
+void ExplorerWidget::AddSongsInPlaylistButtonClickSlot()
+{
     emit AddSongsInPlaylistSignal();
 }

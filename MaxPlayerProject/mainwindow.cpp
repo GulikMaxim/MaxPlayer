@@ -11,9 +11,13 @@ MainWindow::MainWindow(QWidget *parent) : Window(parent)
     this->SetSize(QSize(526,620));
     this->setStyle(new QPlastiqueStyle());
 
+    this->setFrameStyle(QFrame::Sunken | QFrame::Box);
+    this->setLineWidth(1);
+
     //Logo setup
-    QLabel *p_TitleLabel = new QLabel("                          MaxPLayer. Only music...");
-    p_TitleLabel->setFont(QFont("Freestyle script",15,QFont::Normal));  //Chiller
+    QLabel *p_TitleLabel = new QLabel(); //"                          MaxPLayer. Only music..."
+    p_TitleLabel->setPixmap(QPixmap("MainLogo.png"));
+    p_TitleLabel->move(300,0);
     p_TitleLabel->setParent(this);
 
     //control buttons setup
@@ -41,13 +45,13 @@ MainWindow::MainWindow(QWidget *parent) : Window(parent)
     p_ExplorerButton->setStyle(new QPlastiqueStyle());
     connect(p_ExplorerButton,SIGNAL(clicked()),SLOT(ExplorerButtonClickedSlot()));
 
-    p_SettingButton = new QPushButton("Settings",this);
-    p_SettingButton->setCheckable(true);
-    p_SettingButton->setFlat(true);
-    p_SettingButton->setFixedSize(80,60);
-    p_SettingButton->move(3,210);
-    p_SettingButton->setStyle(new QPlastiqueStyle());
-    connect(p_SettingButton,SIGNAL(clicked()),SLOT(SettingButtonClickedSlot()));
+    p_AboutButton = new QPushButton("About",this);
+    p_AboutButton->setCheckable(true);
+    p_AboutButton->setFlat(true);
+    p_AboutButton->setFixedSize(80,60);
+    p_AboutButton->move(3,210);
+    p_AboutButton->setStyle(new QPlastiqueStyle());
+    connect(p_AboutButton,SIGNAL(clicked()),SLOT(AboutButtonClickedSlot()));
 
     //Player widget setup
     p_AudioPlayerWidget = new AudioPlayerWidget();
@@ -57,10 +61,15 @@ MainWindow::MainWindow(QWidget *parent) : Window(parent)
     //Shifting widgets setup
     p_PlaylistWidget = new PlaylistWidget();
     p_LibraryWidget = new LibraryWidget();
+    connect(p_LibraryWidget->GetPlaylistsListWidget(),SIGNAL(PlaylistButtonClickedSignal(Playlist*)),SLOT(OpenPlaylistSlot(Playlist*)));
+    connect(p_LibraryWidget,SIGNAL(SavePlaylistButtonClickedSignal(QString)),SLOT(SavePlaylistSlot(QString)));
+    connect(p_LibraryWidget,SIGNAL(DialogWindowShowSignal(bool)),SLOT(setDisabled(bool)));
+
     p_ExplorerWidget = new ExplorerWidget();
+    connect(p_ExplorerWidget,SIGNAL(OpenSongsInPlaylistSignal()),SLOT(OpenSongsInPlaylistSlot()));
     connect(p_ExplorerWidget,SIGNAL(AddSongsInPlaylistSignal()),SLOT(AddSongsInPlaylistSlot()));
 
-    p_SettingWidget = new SettingWidget();
+    p_AboutWidget = new AboutWidget();
 
     //Shifting widgets stack setup
     p_ShiftingFieldWidgets = new QStackedWidget(this);
@@ -69,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) : Window(parent)
     p_ShiftingFieldWidgets->addWidget(p_PlaylistWidget);
     p_ShiftingFieldWidgets->addWidget(p_LibraryWidget);
     p_ShiftingFieldWidgets->addWidget(p_ExplorerWidget);
-    p_ShiftingFieldWidgets->addWidget(p_SettingWidget);
+    p_ShiftingFieldWidgets->addWidget(p_AboutWidget);
 
     emit(p_PlaylistButton->click());  // work begin with playlist state
     p_AudioPlayerWidget->ConnectPlaylist(p_PlaylistWidget);    // connect playlist with player widget
@@ -92,10 +101,10 @@ void MainWindow::PlaylistButtonClickedSlot()
         }
         else
         {
-            if(p_SettingButton->isChecked())
+            if(p_AboutButton->isChecked())
             {
-                p_SettingButton->setChecked(false);
-                SetButtonTextColor(p_SettingButton,Qt::white);
+                p_AboutButton->setChecked(false);
+                SetButtonTextColor(p_AboutButton,Qt::white);
             }
         }
     }
@@ -126,10 +135,10 @@ void MainWindow::LibraryButtonClickedSlot()
         }
         else
         {
-            if(p_SettingButton->isChecked())
+            if(p_AboutButton->isChecked())
             {
-                p_SettingButton->setChecked(false);
-                SetButtonTextColor(p_SettingButton,Qt::white);
+                p_AboutButton->setChecked(false);
+                SetButtonTextColor(p_AboutButton,Qt::white);
             }
         }
     }
@@ -160,10 +169,10 @@ void MainWindow::ExplorerButtonClickedSlot()
         }
         else
         {
-            if(p_SettingButton->isChecked())
+            if(p_AboutButton->isChecked())
             {
-                p_SettingButton->setChecked(false);
-                SetButtonTextColor(p_SettingButton,Qt::white);
+                p_AboutButton->setChecked(false);
+                SetButtonTextColor(p_AboutButton,Qt::white);
             }
         }
     }
@@ -178,7 +187,7 @@ void MainWindow::ExplorerButtonClickedSlot()
         p_ExplorerButton->setChecked(true);
     }
 }
-void MainWindow::SettingButtonClickedSlot()
+void MainWindow::AboutButtonClickedSlot()
 {
     if(p_PlaylistButton->isChecked())    // cheking state of other buttons and change colors of them
     {
@@ -202,25 +211,70 @@ void MainWindow::SettingButtonClickedSlot()
         }
     }
 
-    if(p_SettingButton->isChecked())
+    if(p_AboutButton->isChecked())
     {
-        SetButtonTextColor(p_SettingButton,Qt::black);
-        p_ShiftingFieldWidgets->setCurrentWidget(p_SettingWidget);
+        SetButtonTextColor(p_AboutButton,Qt::black);
+        p_ShiftingFieldWidgets->setCurrentWidget(p_AboutWidget);
     }
     else
     {
-        p_SettingButton->setChecked(true);
+        p_AboutButton->setChecked(true);
     }
 }
-void MainWindow::AddSongsInPlaylistSlot()
+void MainWindow::OpenSongsInPlaylistSlot()
 {
     p_PlaylistWidget->Clear();
-    p_PlaylistWidget->OpenTracks(p_ExplorerWidget->GetSelectedSongs());
+    p_PlaylistWidget->GetSongsList()->OpenTracks(p_ExplorerWidget->GetSelectedSongs());
     p_ExplorerWidget->ClearSelection();
 
     emit p_PlaylistButton->click();
 }
+void MainWindow::AddSongsInPlaylistSlot()
+{
+    p_PlaylistWidget->GetSongsList()->OpenTracks(p_ExplorerWidget->GetSelectedSongs());
+    p_ExplorerWidget->ClearSelection();
 
+    emit p_PlaylistButton->click();
+}
+void MainWindow::OpenPlaylistSlot(Playlist* p_Playlist)
+{
+    QStringList songsUrlsListInStrings= p_Playlist->GetSongsUrlsList();
+    QList<QUrl> songsUrlsList;
+    foreach(QString songPath, songsUrlsListInStrings)
+    {
+        songsUrlsList<<QUrl(songPath);
+    }
+    p_PlaylistWidget->Clear();
+    p_PlaylistWidget->GetSongsList()->OpenTracks(songsUrlsList);
+
+    emit p_PlaylistButton->click();
+}
+void MainWindow::SavePlaylistSlot(QString playlistName)
+{
+    //save information about current playlist
+    Playlist currentPlaylist;
+    currentPlaylist.SetName(playlistName);
+    currentPlaylist.SetCreationDate(QDateTime::currentDateTime());
+    QList<TrackButton*> trackButtonsList = p_PlaylistWidget->GetSongsList()->GetTrackButtonsList();
+    QStringList songsUrlsInString;
+
+    //save url of songs
+    foreach(TrackButton* p_TrackButton,trackButtonsList)
+    {
+        songsUrlsInString<<p_TrackButton->GetTrackUrl().toString();
+    }
+    currentPlaylist.SetSongsUrlsList(songsUrlsInString);
+
+    //save playlist
+    currentPlaylist.SaveTo(p_LibraryWidget->GetPlaylistsListWidget()->GetPlaylistDirrectoryPath());
+
+    //add playlist at playlist list widget
+    p_LibraryWidget->GetPlaylistsListWidget()->AddPlaylist(currentPlaylist);
+}
+void MainWindow::SetEnabled()
+{
+    this->setEnabled(true);
+}
 //methods
 void MainWindow::SetButtonTextColor(QPushButton *p_Button,const QColor & color)
 {

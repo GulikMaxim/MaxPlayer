@@ -115,3 +115,14 @@ void Playlist::ReadFrom(QString path, QString playlistName, bool isReadSongsUrls
         playlistFile.close();
     }
 }
+bool Playlist::isEmpty()
+{
+    if(songsUrlsList.size())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}

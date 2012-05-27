@@ -20,7 +20,7 @@ PlaylistWidget::PlaylistWidget(QWidget *parent) :
     p_SongList->move(0,-1);
     connect(p_SongList,SIGNAL(songListChangedSignal()),SLOT(SongListChangedSlot()));
 
-    //playlist menu setup
+    ///playlist menu setup
     p_PlayListMenuButton = new MyCheckableButton(QPixmap("MenuTurnOn.png"),QPixmap("Menu.png"),this);
     p_PlayListMenuButton->move(416,20);
     p_PlayListMenuButton->SetSize(QSize(16,16));
@@ -41,16 +41,13 @@ PlaylistWidget::PlaylistWidget(QWidget *parent) :
     p_MultiSellectionCheckBox->hide();
     connect(p_MultiSellectionCheckBox,SIGNAL(clicked()),SLOT(MultiSellectionCheckBoxChangeSlot()));
 
-    p_SavePlaylistButton = new PixmapButton(QPixmap("SavePlaylist.png"),QSize(36,36),this);
-    p_SavePlaylistButton->move(382,138);
-    p_SavePlaylistButton->hide();
-
     p_LeaveTracksButton= new PixmapButton(QPixmap("LeaveSongs.png"),QSize(36,36),this);
-    p_LeaveTracksButton->move(382,196);
+    p_LeaveTracksButton->move(382,138);
     p_LeaveTracksButton->hide();
-    connect(p_LeaveTracksButton,SIGNAL(clicked()),p_SongList,SLOT(LeaveSelectedTracksSlot()));    
+    connect(p_LeaveTracksButton,SIGNAL(clicked()),p_SongList,SLOT(LeaveSelectedTracksSlot()));
 
     this->OpenMenu(false);
+    p_PlayListMenuButton->click();
 }
 
 //methods
@@ -82,10 +79,6 @@ void PlaylistWidget::OpenMenu(bool openStatus)
         }
     }
 }
-void PlaylistWidget::OpenTracks(QList<QUrl> songsUrls)
-{
-    p_SongList->OpenTracks(songsUrls);
-}
 void PlaylistWidget::Clear()
 {
     p_SongList->Clear();
@@ -98,13 +91,11 @@ void PlaylistWidget::PlaylistMenuButtonClickSlot()
         this->ShowTitle(true);
         this->OpenMenu(true);
         p_MultiSellectionCheckBox->show();
-        p_SavePlaylistButton->show();
         p_DeleteTracksButton->show();
         p_LeaveTracksButton->show();
     }
     else
     {
-        p_SavePlaylistButton->hide();
         p_DeleteTracksButton->hide();
         p_LeaveTracksButton->hide();
         p_MultiSellectionCheckBox->hide();

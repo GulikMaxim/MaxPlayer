@@ -2,7 +2,6 @@
 #include <QtGui>
 #include <mainwindow.h>
 
-#include <playlistbutton.h>
 
 
 int main(int argc, char *argv[])
@@ -11,9 +10,6 @@ int main(int argc, char *argv[])
 
     MainWindow *p_MaxPlayer = new MainWindow();
     p_MaxPlayer->show();
-//    PlaylistButton *pl = new PlaylistButton();
-//    pl->SetActiveStatus(true);
-//    pl->show();
 
     return a.exec();
 }

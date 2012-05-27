@@ -78,7 +78,7 @@ void SongsListWidget::OpenTracks(QList<QUrl> songsUrls)
     {
         foreach(QUrl songUrl, songsUrls)
         {
-            TrackButton *p_TrackButton = new TrackButton(/*p_EmbeddableListSongWidget*/);
+            TrackButton *p_TrackButton = new TrackButton();
             p_TrackButton->OpenTrack(songUrl);
             trackButtonsList<<p_TrackButton;
             connect(p_TrackButton,SIGNAL(clicked()),SLOT(TrackButtonClickSlot()));
@@ -183,6 +183,10 @@ void SongsListWidget::SetMultiSelectedMode(bool state)
         }
     }
 }
+QList<TrackButton*> SongsListWidget::GetTrackButtonsList()
+{
+    return trackButtonsList;
+}
 //slots
 void SongsListWidget::TrackButtonClickSlot()
 {
@@ -191,7 +195,7 @@ void SongsListWidget::TrackButtonClickSlot()
     {
         Track* p_Tr = p_ClickedTrackButton->GetTrack();
         Phonon::MediaObject* md =  p_Tr->GetAudioObject();
-        int selectedTrackIndex = this->GetTrackIndex(md); //p_ClickedTrackButton->GetTrack()->GetAudioObject()
+        int selectedTrackIndex = this->GetTrackIndex(md);
         if(p_ClickedTrackButton->IsActive())
         {
             if(selectedTracksIndexes.size() != 1)   //minimum one track must be selected forever

@@ -16,9 +16,7 @@ LibraryWidget::LibraryWidget(QWidget *parent) :
     this->setAutoFillBackground(true);
     this->setPalette(*p_LibraryPalette);
 
-
     //lybrary setup
-
     p_PlaylistsList = new PlaylistsListWidget(this);
     p_PlaylistsList->move(0,-1);
     connect(p_PlaylistsList,SIGNAL(PlaylistChangedSignal()),SLOT(PlaylistsListChangedSlot()));
@@ -45,23 +43,24 @@ LibraryWidget::LibraryWidget(QWidget *parent) :
     p_MultiSellectionCheckBox->hide();
     connect(p_MultiSellectionCheckBox,SIGNAL(clicked()),SLOT(MultiSellectionCheckBoxChangeSlot()));
 
-//    p_SavePlaylistButton = new PixmapButton(QPixmap("SavePlaylist.png"),QSize(36,36),this);
-//    p_SavePlaylistButton->move(382,138);
-//    p_SavePlaylistButton->hide();
+    p_SavePlaylistButton = new PixmapButton(QPixmap("SavePlaylist.png"),QSize(36,36),this);
+    p_SavePlaylistButton->move(382,138);
+    p_SavePlaylistButton->hide();
+    connect(p_SavePlaylistButton,SIGNAL(clicked()),SLOT(SavePlaylistButtonClickedSlot()));
 
-//    p_LeaveTracksButton= new PixmapButton(QPixmap("LeaveSongs.png"),QSize(36,36),this);
-//    p_LeaveTracksButton->move(382,196);
-//    p_LeaveTracksButton->hide();
-//    connect(p_LeaveTracksButton,SIGNAL(clicked()),p_SongList,SLOT(LeaveSelectedTracksSlot()));
+    this->OpenMenu(true);
+    p_LibraryMenuButton->click();
 
-    this->OpenMenu(false);
+    //dialog menu window setup
+    p_EnterNameDialogWindow = new EnterLineDialogWindow();
+    p_EnterNameDialogWindow->SetTitleText(QString("Save playlist"));
+    p_EnterNameDialogWindow->SetConfirmButtonText("Save");
+    p_EnterNameDialogWindow->SetInformationLabelText("Name didn't enter!");
+    connect(p_EnterNameDialogWindow,SIGNAL(DialogWindowShowSignal(bool)),SIGNAL(DialogWindowShowSignal(bool)));
+    connect(p_EnterNameDialogWindow,SIGNAL(ConfirmButtonClickSignal(QString)),SLOT(CheckingPlaylistNameSlot(QString)));
 }
 
 //methods
-PlaylistsListWidget* LibraryWidget::GetPlaylistsList()
-{
-    return p_PlaylistsList;
-}
 void LibraryWidget::OpenMenu(bool openStatus)
 {
     QTime t;
@@ -94,6 +93,10 @@ void LibraryWidget::Clear()
 {
     p_PlaylistsList->Clear();
 }
+PlaylistsListWidget* LibraryWidget::GetPlaylistsListWidget()
+{
+    return p_PlaylistsList;
+}
 //slots
 void LibraryWidget::LibraryMenuButtonClickSlot()
 {
@@ -102,15 +105,13 @@ void LibraryWidget::LibraryMenuButtonClickSlot()
         this->ShowTitle(true);
         this->OpenMenu(true);
         p_MultiSellectionCheckBox->show();
-//        p_SavePlaylistButton->show();
+        p_SavePlaylistButton->show();
         p_DeletePlaylistsButton->show();
-//        p_LeaveTracksButton->show();
     }
     else
     {
-//        p_SavePlaylistButton->hide();
+        p_SavePlaylistButton->hide();
         p_DeletePlaylistsButton->hide();
-//        p_LeaveTracksButton->hide();
         p_MultiSellectionCheckBox->hide();
         this->OpenMenu(false);
         this->ShowTitle(false);
@@ -142,5 +143,31 @@ void LibraryWidget::PlaylistsListChangedSlot()
         p_PlaylistPalette->setBrush(this->backgroundRole(),QBrush(QPixmap("shifftingWidgetBackgraund.jpg")));
         this->setAutoFillBackground(true);
         this->setPalette(*p_PlaylistPalette);
+    }
+}
+void LibraryWidget::SavePlaylistButtonClickedSlot()
+{
+    emit DialogWindowShowSignal(true);
+    p_EnterNameDialogWindow->show();
+
+}
+
+void LibraryWidget::CheckingPlaylistNameSlot(QString playlistName)
+{
+    if(this->GetPlaylistsListWidget()->GetPlaylistIndex(playlistName) > -1)
+    {
+        p_EnterNameDialogWindow->SetInformationLabelText("Playlist with this name is already saved!");
+        p_EnterNameDialogWindow->ShowInformationLabel(true);
+        p_EnterNameDialogWindow->ShowConfirmButton(false);
+        p_EnterNameDialogWindow->ShowEditLine(false);
+    }
+    else
+    {
+        p_EnterNameDialogWindow->SetInformationLabelText("Name didn't enter!");
+        p_EnterNameDialogWindow->ShowEditLine(true);
+        p_EnterNameDialogWindow->ShowConfirmButton(true);
+        p_EnterNameDialogWindow->ShowInformationLabel(false);
+        p_EnterNameDialogWindow->CancelWindow();
+        emit SavePlaylistButtonClickedSignal(playlistName);
     }
 }

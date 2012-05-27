@@ -7,13 +7,6 @@ Window::Window(QWidget *parent) :
     this->setWindowFlags(Qt::FramelessWindowHint);
     this->setFixedSize(526,620);
 
-//    //Logo setup
-//    p_TitleLabel = new QLabel(this);
-//    p_TitleLabel->setFont(QFont("Freestyle script",15,QFont::Normal));  //Chiller
-//    p_TitleLabel->setText("                          MaxPLayer. Only music...");
-//    p_TitleLabel->move(0,3);
-//    p_TitleLabel->setPalette(QPalette(Qt::white,Qt::cyan));
-
     //Control and window buttons setup
     p_CloseWindowButton = new QPushButton(this);
     p_CloseWindowButton->setFlat(true);

@@ -32,7 +32,7 @@ TrackButton::TrackButton(QWidget *parent) :  QPushButton(parent)
     this->SetPlayStatus(false);
     this->SetActiveStatus(false);
 
-    p_Track = NULL;
+    p_TrackUrl = NULL;
 }
 
 //Methods
@@ -70,6 +70,7 @@ void TrackButton::OpenTrack(QUrl trackUrl)
 
     p_ArtistNameLabel->setText(p_Track->GetArtist());
     p_TrackNameLabel->setText(p_Track->GetTitle());
+    p_TrackUrl = new QUrl(trackUrl);
 }
 Track* TrackButton::GetTrack()
 {
@@ -82,4 +83,8 @@ bool TrackButton::IsActive()
 bool TrackButton::IsPlay()
 {
     return isPlayStatus;
+}
+QUrl TrackButton::GetTrackUrl()
+{
+    return *p_TrackUrl;
 }
